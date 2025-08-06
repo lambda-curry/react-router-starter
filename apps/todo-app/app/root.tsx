@@ -1,16 +1,9 @@
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration
-} from 'react-router';
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-import type { Route } from './+types/root';
+import type { MetaFunction, ErrorResponse } from 'react-router';
 import './globals.css';
 
-export const meta: Route.MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: 'Todo App - React Router 7 Starter' },
     { name: 'description', content: 'A modern todo app built with React Router 7, Tailwind CSS, and shadcn/ui' }
@@ -35,7 +28,7 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export function ErrorBoundary({ error }: { error: Error }) {
   let message = 'Oops!';
   let details = 'An unexpected error occurred.';
   let stack: string | undefined;
@@ -60,4 +53,3 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     </main>
   );
 }
-
