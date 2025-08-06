@@ -20,9 +20,7 @@
       "@todo-starter/ui": ["./packages/ui/src"],
       "@todo-starter/ui/*": ["./packages/ui/src/*"],
       "@todo-starter/utils": ["./packages/utils/src"],
-      "@todo-starter/utils/*": ["./packages/utils/src/*"],
-      "@todo-starter/config": ["./packages/config/src"],
-      "@todo-starter/config/*": ["./packages/config/src/*"]
+      "@todo-starter/utils/*": ["./packages/utils/src/*"]
     }
   },
   "include": [
@@ -36,4 +34,3 @@
     ".turbo"
   ]
 }
-

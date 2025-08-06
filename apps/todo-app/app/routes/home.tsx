@@ -1,11 +1,11 @@
-import type { Route } from './+types/home';
+import type { MetaFunction } from 'react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo-starter/ui';
 import { AddTodo } from '~/components/add-todo';
 import { TodoItem } from '~/components/todo-item';
 import { TodoFilters } from '~/components/todo-filters';
 import { useTodoStore, getFilteredTodos } from '~/lib/todo-store';
 
-export const meta: Route.MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: 'Todo App - React Router 7 Starter' },
     { name: 'description', content: 'A modern todo app built with React Router 7' }

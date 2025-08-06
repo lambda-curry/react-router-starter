@@ -77,7 +77,7 @@ bun dev
 ### Monorepo Structure
 This project uses a monorepo structure with the following packages:
 
-- **@todo-starter/config** - Shared configurations (Tailwind, TypeScript)
+
 - **@todo-starter/ui** - Component library based on shadcn/ui
 - **@todo-starter/utils** - Shared utilities, types, and helpers
 
@@ -94,6 +94,17 @@ Components are organized by feature and follow these principles:
 - Composition over inheritance
 - Proper TypeScript typing
 - Accessible by default
+
+## 🎨 Styling
+
+This project uses **Tailwind CSS v4** with CSS-first configuration for modern, efficient styling.
+
+### Tailwind v4 Configuration
+- **CSS-first approach**: Theme configuration is defined directly in CSS using the `@theme` directive
+- **No JavaScript config needed**: Tailwind v4 eliminates the need for `tailwind.config.js` files in most cases
+- **Theme variables**: All design tokens (colors, spacing, etc.) are defined in `apps/todo-app/app/globals.css`
+- **Dark mode support**: Uses `@custom-variant` and `@variant` directives for theme switching
+- **shadcn/ui compatible**: Maintains full compatibility with shadcn/ui components
 
 ## 🧪 Testing
 
@@ -186,4 +197,3 @@ The app supports:
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-

@@ -1,11 +1,5 @@
-import baseConfig from '@todo-starter/config/tailwind';
-import type { Config } from 'tailwindcss';
+// Tailwind CSS v4 uses CSS-first configuration
+// Theme configuration is now in app/globals.css using @theme directive
+// This file is no longer needed but kept for compatibility if needed
 
-export default {
-  ...baseConfig,
-  content: [
-    './app/**/*.{js,jsx,ts,tsx}',
-    '../../packages/ui/src/**/*.{js,jsx,ts,tsx}'
-  ]
-} satisfies Config;
-
+export default {};
