@@ -1,0 +1,22 @@
+{
+  "extends": "@todo-starter/config/typescript",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"],
+      "@todo-starter/ui": ["../../packages/ui/src"],
+      "@todo-starter/ui/*": ["../../packages/ui/src/*"],
+      "@todo-starter/utils": ["../../packages/utils/src"],
+      "@todo-starter/utils/*": ["../../packages/utils/src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/.server/**/*.ts",
+    "**/.server/**/*.tsx",
+    "**/.client/**/*.ts",
+    "**/.client/**/*.tsx"
+  ]
+}
+

@@ -1,0 +1,49 @@
+{
+  "name": "todo-app",
+  "version": "0.0.1",
+  "description": "Todo App - React Router 7 Starter",
+  "author": "Lambda Curry <team@lambdacurry.dev>",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:ci": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@vitest/ui": "^3.2.4",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@react-router/node": "^7.7.1",
+    "@react-router/serve": "^7.7.1",
+    "@tailwindcss/vite": "^4.1.10",
+    "@todo-starter/ui": "workspace:*",
+    "@todo-starter/utils": "workspace:*",
+    "isbot": "^5.1.27",
+    "lucide-react": "^0.525.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.7.1",
+    "tailwindcss": "^4.1.10",
+    "zustand": "^5.0.1"
+  }
+}
+
