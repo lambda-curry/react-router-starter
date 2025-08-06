@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES6"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@todo-starter/ui": ["./packages/ui/src"],
+      "@todo-starter/ui/*": ["./packages/ui/src/*"],
+      "@todo-starter/utils": ["./packages/utils/src"],
+      "@todo-starter/utils/*": ["./packages/utils/src/*"],
+      "@todo-starter/config": ["./packages/config/src"],
+      "@todo-starter/config/*": ["./packages/config/src/*"]
+    }
+  },
+  "include": [
+    "apps/**/*",
+    "packages/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    ".turbo"
+  ]
+}
+
