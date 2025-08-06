@@ -1,6 +1,6 @@
 ---
 description: Guidelines for using @lambdacurry/forms library with Remix Hook Form and Zod validation
-globs: app/**/*.tsx, app/**/*.ts, components/**/*.tsx, components/**/*.ts
+globs: apps/**/app/**/*.tsx, apps/**/app/**/*.ts, packages/**/*.tsx, packages/**/*.ts
 alwaysApply: true
 ---
 
