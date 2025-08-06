@@ -1,8 +1,19 @@
 import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
+import { z } from 'zod';
 import { Trash2, Edit2, Check, X } from 'lucide-react';
-import { Button, Checkbox, Input } from '@todo-starter/ui';
+import { TextField, FormError } from '@lambdacurry/forms';
+import { Button } from '@lambdacurry/forms/ui';
+import { Checkbox } from '@todo-starter/ui';
 import { cn } from '@todo-starter/utils';
 import type { Todo } from '@todo-starter/utils';
+
+const editTodoSchema = z.object({
+  text: z.string().min(1, 'Todo text is required').trim(),
+});
+
+type EditTodoFormData = z.infer<typeof editTodoSchema>;
 
 interface TodoItemProps {
   todo: Todo;
@@ -13,27 +24,28 @@ interface TodoItemProps {
 
 export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editText, setEditText] = useState(todo.text);
 
-  const handleSave = () => {
-    if (editText.trim() && editText.trim() !== todo.text) {
-      onUpdate(todo.id, editText.trim());
-    }
-    setIsEditing(false);
-    setEditText(todo.text);
-  };
+  const methods = useRemixForm<EditTodoFormData>({
+    resolver: zodResolver(editTodoSchema),
+    defaultValues: { text: todo.text },
+    submitHandlers: {
+      onValid: (data) => {
+        if (data.text !== todo.text) {
+          onUpdate(todo.id, data.text);
+        }
+        setIsEditing(false);
+      },
+    },
+  });
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditText(todo.text);
+    methods.reset({ text: todo.text });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSave();
-    } else if (e.key === 'Escape') {
-      handleCancel();
-    }
+  const handleEdit = () => {
+    setIsEditing(true);
+    methods.reset({ text: todo.text });
   };
 
   return (
@@ -45,21 +57,24 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
       />
       
       {isEditing ? (
-        <div className="flex-1 flex items-center gap-2">
-          <Input
-            value={editText}
-            onChange={e => setEditText(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="flex-1"
-            autoFocus
-          />
-          <Button size="icon" variant="ghost" onClick={handleSave}>
-            <Check className="h-4 w-4" />
-          </Button>
-          <Button size="icon" variant="ghost" onClick={handleCancel}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+        <RemixFormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit} className="flex-1 flex items-center gap-2">
+            <div className="flex-1">
+              <TextField
+                name="text"
+                className="w-full"
+                autoFocus
+              />
+            </div>
+            <Button size="icon" variant="ghost" type="submit">
+              <Check className="h-4 w-4" />
+            </Button>
+            <Button size="icon" variant="ghost" type="button" onClick={handleCancel}>
+              <X className="h-4 w-4" />
+            </Button>
+          </form>
+          <FormError />
+        </RemixFormProvider>
       ) : (
         <>
           <span
@@ -74,7 +89,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
             <Button
               size="icon"
               variant="ghost"
-              onClick={() => setIsEditing(true)}
+              onClick={handleEdit}
               className="h-8 w-8"
             >
               <Edit2 className="h-4 w-4" />
@@ -93,4 +108,3 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
     </div>
   );
 }
-

@@ -1,9 +1,12 @@
 import type { MetaFunction } from 'react-router';
+import { Link } from 'react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo-starter/ui';
+import { Button } from '@lambdacurry/forms/ui';
 import { AddTodo } from '~/components/add-todo';
 import { TodoItem } from '~/components/todo-item';
 import { TodoFilters } from '~/components/todo-filters';
 import { useTodoStore, getFilteredTodos } from '~/lib/todo-store';
+import { Settings } from 'lucide-react';
 
 export const meta: MetaFunction = () => {
   return [
@@ -31,11 +34,21 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-2xl mx-auto space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">Todo App</h1>
-          <p className="text-muted-foreground">
-            Built with React Router 7, Tailwind CSS, and shadcn/ui
-          </p>
+        <div className="text-center space-y-4">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight">Todo App</h1>
+            <p className="text-muted-foreground">
+              Built with React Router 7, Tailwind CSS, shadcn/ui, and @lambdacurry/forms
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <Button asChild variant="outline">
+              <Link to="/create-todo">
+                <Settings className="h-4 w-4 mr-2" />
+                Advanced Todo Form
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -99,4 +112,3 @@ export default function Home() {
     </div>
   );
 }
-
