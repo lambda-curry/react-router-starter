@@ -74,6 +74,9 @@ jspm_packages/
 # Vite
 .vite
 
+# React Router generated types
+.react-router/
+
 # Next.js build output
 .next
 
@@ -114,4 +117,3 @@ Thumbs.db
 
 # Biome
 .biome-cache
-

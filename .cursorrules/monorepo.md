@@ -2,7 +2,7 @@
 
 ## Package Structure
 - `apps/` - Applications (todo-app)
-- `packages/` - Shared packages (ui, utils, config)
+- `packages/` - Shared packages (ui, utils)
 - Each package has its own package.json with proper exports
 
 ## Workspace Dependencies
