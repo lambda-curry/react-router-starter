@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@todo-starter/ui": ["../ui/src"],
+      "@todo-starter/ui/*": ["../ui/src/*"],
+      "@todo-starter/utils": ["./src"],
+      "@todo-starter/utils/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".turbo"
+  ]
+}
+

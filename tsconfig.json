@@ -24,7 +24,6 @@
     }
   },
   "include": [
-    "apps/**/*",
     "packages/**/*"
   ],
   "exclude": [
