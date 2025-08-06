@@ -38,7 +38,7 @@ export function AddTodo({ onAdd }: AddTodoProps) {
           Add
         </Button>
       </form>
-      <FormError />
+      <FormError name="" />
     </RemixFormProvider>
   );
 }

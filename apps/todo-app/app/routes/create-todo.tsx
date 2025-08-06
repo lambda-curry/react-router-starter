@@ -132,8 +132,6 @@ export default function CreateTodo() {
                       name="description"
                       label="Description"
                       placeholder="Optional description..."
-                      multiline
-                      rows={3}
                     />
                   </div>
 
@@ -173,7 +171,7 @@ export default function CreateTodo() {
                   </div>
                 )}
 
-                <FormError />
+                <FormError name="" />
 
                 <div className="flex gap-3 pt-4">
                   <Button type="submit" disabled={isSubmitting} className="flex-1">
