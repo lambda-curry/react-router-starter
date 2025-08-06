@@ -16,16 +16,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Home() {
-  const {
-    todos,
-    filter,
-    addTodo,
-    toggleTodo,
-    deleteTodo,
-    updateTodo,
-    setFilter,
-    clearCompleted
-  } = useTodoStore();
+  const { todos, filter, addTodo, toggleTodo, deleteTodo, updateTodo, setFilter, clearCompleted } = useTodoStore();
 
   const filteredTodos = getFilteredTodos(todos, filter);
   const activeCount = todos.filter(todo => !todo.completed).length;
@@ -54,9 +45,7 @@ export default function Home() {
         <Card>
           <CardHeader>
             <CardTitle>Add New Todo</CardTitle>
-            <CardDescription>
-              What would you like to accomplish today?
-            </CardDescription>
+            <CardDescription>What would you like to accomplish today?</CardDescription>
           </CardHeader>
           <CardContent>
             <AddTodo onAdd={addTodo} />
@@ -102,9 +91,7 @@ export default function Home() {
         {todos.length === 0 && (
           <Card>
             <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">
-                No todos yet. Add one above to get started!
-              </p>
+              <p className="text-muted-foreground">No todos yet. Add one above to get started!</p>
             </CardContent>
           </Card>
         )}

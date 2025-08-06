@@ -10,7 +10,7 @@ import { cn } from '@todo-starter/utils';
 import type { Todo } from '@todo-starter/utils';
 
 const editTodoSchema = z.object({
-  text: z.string().min(1, 'Todo text is required').trim(),
+  text: z.string().min(1, 'Todo text is required').trim()
 });
 
 type EditTodoFormData = z.infer<typeof editTodoSchema>;
@@ -29,13 +29,13 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
     resolver: zodResolver(editTodoSchema),
     defaultValues: { text: todo.text },
     submitHandlers: {
-      onValid: (data) => {
+      onValid: data => {
         if (data.text !== todo.text) {
           onUpdate(todo.id, data.text);
         }
         setIsEditing(false);
-      },
-    },
+      }
+    }
   });
 
   const handleCancel = () => {
@@ -50,21 +50,13 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
 
   return (
     <div className="flex items-center gap-3 p-4 border rounded-lg bg-card">
-      <Checkbox
-        checked={todo.completed}
-        onCheckedChange={() => onToggle(todo.id)}
-        className="flex-shrink-0"
-      />
-      
+      <Checkbox checked={todo.completed} onCheckedChange={() => onToggle(todo.id)} className="flex-shrink-0" />
+
       {isEditing ? (
         <RemixFormProvider {...methods}>
           <form onSubmit={methods.handleSubmit} className="flex-1 flex items-center gap-2">
             <div className="flex-1">
-              <TextField
-                name="text"
-                className="w-full"
-                autoFocus
-              />
+              <TextField name="text" className="w-full" autoFocus />
             </div>
             <Button size="icon" variant="ghost" type="submit">
               <Check className="h-4 w-4" />
@@ -77,21 +69,11 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
         </RemixFormProvider>
       ) : (
         <>
-          <span
-            className={cn(
-              'flex-1 text-left',
-              todo.completed && 'line-through text-muted-foreground'
-            )}
-          >
+          <span className={cn('flex-1 text-left', todo.completed && 'line-through text-muted-foreground')}>
             {todo.text}
           </span>
           <div className="flex items-center gap-1">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={handleEdit}
-              className="h-8 w-8"
-            >
+            <Button size="icon" variant="ghost" onClick={handleEdit} className="h-8 w-8">
               <Edit2 className="h-4 w-4" />
             </Button>
             <Button

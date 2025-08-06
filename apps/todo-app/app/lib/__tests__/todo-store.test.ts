@@ -21,9 +21,9 @@ describe('todo-store', () => {
   describe('addTodo', () => {
     it('adds a new todo', () => {
       const { addTodo } = useTodoStore.getState();
-      
+
       addTodo('Test todo');
-      
+
       const { todos } = useTodoStore.getState();
       expect(todos).toHaveLength(1);
       expect(todos[0].text).toBe('Test todo');
@@ -33,9 +33,9 @@ describe('todo-store', () => {
 
     it('trims whitespace from todo text', () => {
       const { addTodo } = useTodoStore.getState();
-      
+
       addTodo('  Test todo  ');
-      
+
       const { todos } = useTodoStore.getState();
       expect(todos[0].text).toBe('Test todo');
     });
@@ -44,15 +44,15 @@ describe('todo-store', () => {
   describe('toggleTodo', () => {
     it('toggles todo completion status', () => {
       const { addTodo, toggleTodo } = useTodoStore.getState();
-      
+
       addTodo('Test todo');
       const todoId = useTodoStore.getState().todos[0].id;
-      
+
       toggleTodo(todoId);
-      
+
       const { todos } = useTodoStore.getState();
       expect(todos[0].completed).toBe(true);
-      
+
       toggleTodo(todoId);
       expect(useTodoStore.getState().todos[0].completed).toBe(false);
     });
@@ -61,12 +61,12 @@ describe('todo-store', () => {
   describe('deleteTodo', () => {
     it('removes todo from list', () => {
       const { addTodo, deleteTodo } = useTodoStore.getState();
-      
+
       addTodo('Test todo');
       const todoId = useTodoStore.getState().todos[0].id;
-      
+
       deleteTodo(todoId);
-      
+
       const { todos } = useTodoStore.getState();
       expect(todos).toHaveLength(0);
     });
@@ -75,12 +75,12 @@ describe('todo-store', () => {
   describe('updateTodo', () => {
     it('updates todo text', () => {
       const { addTodo, updateTodo } = useTodoStore.getState();
-      
+
       addTodo('Original text');
       const todoId = useTodoStore.getState().todos[0].id;
-      
+
       updateTodo(todoId, 'Updated text');
-      
+
       const { todos } = useTodoStore.getState();
       expect(todos[0].text).toBe('Updated text');
     });
@@ -89,17 +89,17 @@ describe('todo-store', () => {
   describe('clearCompleted', () => {
     it('removes all completed todos', () => {
       const { addTodo, toggleTodo, clearCompleted } = useTodoStore.getState();
-      
+
       addTodo('Todo 1');
       addTodo('Todo 2');
       addTodo('Todo 3');
-      
+
       const todos = useTodoStore.getState().todos;
       toggleTodo(todos[0].id);
       toggleTodo(todos[2].id);
-      
+
       clearCompleted();
-      
+
       const remainingTodos = useTodoStore.getState().todos;
       expect(remainingTodos).toHaveLength(1);
       expect(remainingTodos[0].text).toBe('Todo 2');
@@ -142,4 +142,3 @@ describe('todo-store', () => {
     });
   });
 });
-

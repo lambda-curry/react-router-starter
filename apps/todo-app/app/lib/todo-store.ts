@@ -43,9 +43,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
   toggleTodo: (id: string) => {
     set(state => ({
       todos: state.todos.map(todo =>
-        todo.id === id
-          ? { ...todo, completed: !todo.completed, updatedAt: new Date() }
-          : todo
+        todo.id === id ? { ...todo, completed: !todo.completed, updatedAt: new Date() } : todo
       )
     }));
   },
@@ -58,11 +56,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
 
   updateTodo: (id: string, text: string) => {
     set(state => ({
-      todos: state.todos.map(todo =>
-        todo.id === id
-          ? { ...todo, text: text.trim(), updatedAt: new Date() }
-          : todo
-      )
+      todos: state.todos.map(todo => (todo.id === id ? { ...todo, text: text.trim(), updatedAt: new Date() } : todo))
     }));
   },
 
@@ -87,4 +81,3 @@ export const getFilteredTodos = (todos: Todo[], filter: TodoFilter): Todo[] => {
       return todos;
   }
 };
-
