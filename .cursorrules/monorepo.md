@@ -32,7 +32,7 @@ import type { Route } from './+types/home';
 - Prefer package-specific scripts for development
 
 ## TypeScript Configuration
-- Extend base config from `@todo-starter/config`
+- Use Tailwind CSS v4's CSS-first configuration with `@theme` directive
 - Use path mapping for workspace packages
 - Keep tsconfig.json files minimal and focused
 
@@ -41,4 +41,3 @@ import type { Route } from './+types/home';
 - Avoid circular dependencies between packages
 - Use proper exports in package.json
 - Document package APIs and usage patterns
-

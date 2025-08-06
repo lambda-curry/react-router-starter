@@ -1,5 +1,5 @@
 {
-  "extends": "@todo-starter/config/typescript",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -19,4 +19,3 @@
     "**/.client/**/*.tsx"
   ]
 }
-
