@@ -9,7 +9,7 @@ A modern, full-featured todo application built with React Router 7, showcasing b
 - **Tailwind CSS v4** - Modern styling with CSS variables
 - **shadcn/ui Components** - Beautiful, accessible UI components
 - **TypeScript** - Full type safety throughout
-- **Zustand** - Lightweight state management
+- **React Context + useReducer** - Built-in state management
 - **Vitest** - Fast unit testing
 - **Bun** - Fast package manager and runtime
 - **Biome** - Fast linting and formatting
@@ -82,11 +82,12 @@ This project uses a monorepo structure with the following packages:
 - **@todo-starter/utils** - Shared utilities, types, and helpers
 
 ### State Management
-The app uses Zustand for state management with the following features:
+The app uses React's built-in Context API with useReducer for state management with the following features:
 - In-memory todo storage
 - CRUD operations for todos
 - Filtering (all, active, completed)
 - Bulk operations (clear completed)
+- Type-safe actions and state updates
 
 ### Component Architecture
 Components are organized by feature and follow these principles:
@@ -181,7 +182,7 @@ The app supports:
 - [React Router 7 Documentation](https://reactrouter.com/)
 - [Tailwind CSS v4](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
-- [Zustand](https://zustand-demo.pmnd.rs/)
+- [React Context](https://react.dev/reference/react/useContext)
 - [Vitest](https://vitest.dev/)
 - [Turbo](https://turbo.build/)
 
