@@ -61,7 +61,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         createdAt: new Date().toISOString(),
       }
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       errors: {
         _form: { message: 'Failed to create todo. Please try again.' }
@@ -76,7 +76,7 @@ export default function CreateTodo() {
     success?: boolean;
     message?: string; 
     errors?: Record<string, { message: string }>;
-    todo?: any;
+    todo?: unknown;
   }>();
   
   const methods = useRemixForm<CreateTodoFormData>({
