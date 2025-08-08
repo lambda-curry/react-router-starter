@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { AddTodo } from '../add-todo';
+import { MemoryRouter } from 'react-router';
 
 // Hoist regex to top-level to satisfy performance rule
 const addRegex = /add/i;
@@ -8,7 +9,11 @@ const addRegex = /add/i;
 describe('AddTodo', () => {
   it('renders input and button', () => {
     const mockOnAdd = vi.fn();
-    render(<AddTodo onAdd={mockOnAdd} />);
+    render(
+      <MemoryRouter>
+        <AddTodo onAdd={mockOnAdd} />
+      </MemoryRouter>
+    );
 
     expect(screen.getByPlaceholderText('Add a new todo...')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: addRegex })).toBeInTheDocument();
@@ -16,7 +21,11 @@ describe('AddTodo', () => {
 
   it('calls onAdd when form is submitted with text', () => {
     const mockOnAdd = vi.fn();
-    render(<AddTodo onAdd={mockOnAdd} />);
+    render(
+      <MemoryRouter>
+        <AddTodo onAdd={mockOnAdd} />
+      </MemoryRouter>
+    );
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: addRegex });
@@ -29,7 +38,11 @@ describe('AddTodo', () => {
 
   it('clears input after adding todo', () => {
     const mockOnAdd = vi.fn();
-    render(<AddTodo onAdd={mockOnAdd} />);
+    render(
+      <MemoryRouter>
+        <AddTodo onAdd={mockOnAdd} />
+      </MemoryRouter>
+    );
 
     const input = screen.getByPlaceholderText('Add a new todo...') as HTMLInputElement;
     const button = screen.getByRole('button', { name: addRegex });
@@ -42,7 +55,11 @@ describe('AddTodo', () => {
 
   it('does not call onAdd with empty text', () => {
     const mockOnAdd = vi.fn();
-    render(<AddTodo onAdd={mockOnAdd} />);
+    render(
+      <MemoryRouter>
+        <AddTodo onAdd={mockOnAdd} />
+      </MemoryRouter>
+    );
 
     const button = screen.getByRole('button', { name: addRegex });
     fireEvent.click(button);
@@ -52,7 +69,11 @@ describe('AddTodo', () => {
 
   it('trims whitespace from input', () => {
     const mockOnAdd = vi.fn();
-    render(<AddTodo onAdd={mockOnAdd} />);
+    render(
+      <MemoryRouter>
+        <AddTodo onAdd={mockOnAdd} />
+      </MemoryRouter>
+    );
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: addRegex });
