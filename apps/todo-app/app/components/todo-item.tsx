@@ -65,7 +65,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
               <X className="h-4 w-4" />
             </Button>
           </form>
-          <FormError />
+          <FormError name="_form" />
         </RemixFormProvider>
       ) : (
         <>
