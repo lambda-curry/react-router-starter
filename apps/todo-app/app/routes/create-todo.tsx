@@ -6,7 +6,6 @@ import { useFetcher, useNavigate } from 'react-router';
 import { TextField, Checkbox, RadioGroup, DatePicker, FormError } from '@lambdacurry/forms';
 import { Button } from '@lambdacurry/forms/ui';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo-starter/ui';
-import type { Todo } from '@todo-starter/utils';
 import { ArrowLeft, Plus } from 'lucide-react';
 
 const createTodoSchema = z.object({
@@ -74,9 +73,19 @@ export default function CreateTodo() {
     success?: boolean;
     message?: string;
     errors?: Record<string, { message: string }>;
-    todo?: Todo;
   }>();
-
+    todo?: {
+      id: string;
+      title: string;
+      description?: string;
+      priority: 'low' | 'medium' | 'high';
+      dueDate?: string;
+      category: string;
+      isUrgent: boolean;
+      tags?: string;
+      completed: boolean;
+      createdAt: string;
+    };
   const methods = useRemixForm<CreateTodoFormData>({
     resolver: zodResolver(createTodoSchema),
     defaultValues: {

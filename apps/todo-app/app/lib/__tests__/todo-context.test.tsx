@@ -21,13 +21,25 @@ function TestComponent() {
       <button type="button" onClick={() => addTodo('New todo')} data-testid="add-todo">
         Add Todo
       </button>
-      <button type="button" onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} data-testid="toggle-todo">
+      <button 
+        type="button"
+        onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} 
+        data-testid="toggle-todo"
+      >
         Toggle First Todo
       </button>
-      <button type="button" onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} data-testid="delete-todo">
+      <button 
+        type="button"
+        onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} 
+        data-testid="delete-todo"
+      >
         Delete First Todo
       </button>
-      <button type="button" onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} data-testid="update-todo">
+      <button 
+        type="button"
+        onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} 
+        data-testid="update-todo"
+      >
         Update First Todo
       </button>
       <button type="button" onClick={() => setFilter('active')} data-testid="set-filter">
@@ -143,9 +155,8 @@ describe('todo-context', () => {
     it('throws error when used outside provider', () => {
       // Suppress console.error for this test
       const originalError = console.error;
-      // Provide a no-op replacement with a body to satisfy linter
-      console.error = (..._args: unknown[]) => { /* intentionally empty */ };
-
+      console.error = () => undefined;
+      
       expect(() => {
         render(<TestComponent />);
       }).toThrow('useTodoStore must be used within a TodoProvider');

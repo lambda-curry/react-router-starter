@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
-import type { Todo, TodoFilter, TodoStore } from '@todo-starter/utils';
+import type { Todo, TodoFilter } from '@todo-starter/utils';
 import { loadFromStorage, saveToStorage } from '@todo-starter/utils';
 
 // Define the action types for the reducer
@@ -129,6 +129,7 @@ export function TodoProvider({ children }: { children: ReactNode }) {
 
   // Persist to localStorage when todos or filter change.
   const isFirstRender = useRef(true);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: persist only when todos/filter change; other values are stable
   useEffect(() => {
     // Skip persisting on the first render if we already hydrated from storage
     if (isFirstRender.current) {

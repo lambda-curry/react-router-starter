@@ -3,9 +3,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { AddTodo } from '../add-todo';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
-// Hoist regex to top-level to satisfy performance rule
-const addRegex = /add/i;
-
 function renderWithRouter(ui: React.ReactElement) {
   const router = createMemoryRouter([
     { path: '/', element: ui }
@@ -13,13 +10,16 @@ function renderWithRouter(ui: React.ReactElement) {
   return render(<RouterProvider router={router} />);
 }
 
+// hoist regex literals to top-level to satisfy biome's useTopLevelRegex
+const ADD_REGEX = /add/i;
+
 describe('AddTodo', () => {
   it('renders input and button', () => {
     const mockOnAdd = vi.fn();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     expect(screen.getByPlaceholderText('Add a new todo...')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: addRegex })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: ADD_REGEX })).toBeInTheDocument();
   });
 
   it('calls onAdd when form is submitted with text', () => {
@@ -27,8 +27,8 @@ describe('AddTodo', () => {
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const button = screen.getByRole('button', { name: addRegex });
-
+    const button = screen.getByRole('button', { name: ADD_REGEX });
+    
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.click(button);
 
@@ -40,8 +40,8 @@ describe('AddTodo', () => {
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const input = screen.getByPlaceholderText('Add a new todo...') as HTMLInputElement;
-    const button = screen.getByRole('button', { name: addRegex });
-
+    const button = screen.getByRole('button', { name: ADD_REGEX });
+    
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.click(button);
 
@@ -50,9 +50,9 @@ describe('AddTodo', () => {
 
   it('does not call onAdd with empty text', () => {
     const mockOnAdd = vi.fn();
-    renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
-
-    const button = screen.getByRole('button', { name: addRegex });
+    render(<AddTodo onAdd={mockOnAdd} />);
+    
+    const button = screen.getByRole('button', { name: ADD_REGEX });
     fireEvent.click(button);
 
     expect(mockOnAdd).not.toHaveBeenCalled();
@@ -63,8 +63,8 @@ describe('AddTodo', () => {
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const button = screen.getByRole('button', { name: addRegex });
-
+    const button = screen.getByRole('button', { name: ADD_REGEX });
+    
     fireEvent.change(input, { target: { value: '  New todo  ' } });
     fireEvent.click(button);
 
