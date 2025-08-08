@@ -1,6 +1,6 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-import type { MetaFunction, ErrorResponse } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { TodoProvider } from '~/lib/todo-context';
 import './globals.css';
 

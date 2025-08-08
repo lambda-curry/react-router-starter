@@ -20,7 +20,9 @@
       "@todo-starter/ui": ["./packages/ui/src"],
       "@todo-starter/ui/*": ["./packages/ui/src/*"],
       "@todo-starter/utils": ["./packages/utils/src"],
-      "@todo-starter/utils/*": ["./packages/utils/src/*"]
+      "@todo-starter/utils/*": ["./packages/utils/src/*"],
+      // Support app-level alias used in apps/todo-app
+      "~/*": ["./apps/todo-app/app/*"]
     }
   },
   "include": [

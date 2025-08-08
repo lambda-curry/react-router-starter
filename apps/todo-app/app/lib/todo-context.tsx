@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, type ReactNode } from 'react';
-import type { Todo, TodoFilter, TodoStore } from '@todo-starter/utils';
+import type { Todo, TodoFilter } from '@todo-starter/utils';
 
 // Define the action types for the reducer
 type TodoAction =

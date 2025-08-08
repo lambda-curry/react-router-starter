@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RemixFormProvider, useRemixForm, getValidatedFormData } from 'remix-hook-form';
 import { z } from 'zod';
 import { useFetcher, useNavigate } from 'react-router';
-import { TextField, Checkbox, RadioGroup, DatePicker, FormError } from '@lambdacurry/forms';
+import { TextField, Textarea, Checkbox, RadioGroup, DatePicker, FormError } from '@lambdacurry/forms';
 import { Button } from '@lambdacurry/forms/ui';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo-starter/ui';
 import { ArrowLeft, Plus } from 'lucide-react';
@@ -61,7 +61,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         createdAt: new Date().toISOString(),
       }
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       errors: {
         _form: { message: 'Failed to create todo. Please try again.' }
@@ -76,7 +76,8 @@ export default function CreateTodo() {
     success?: boolean;
     message?: string; 
     errors?: Record<string, { message: string }>;
-    todo?: any;
+    // The created todo payload shape is not used by the UI; type as unknown to avoid any
+    todo?: unknown;
   }>();
   
   const methods = useRemixForm<CreateTodoFormData>({
@@ -144,11 +145,10 @@ export default function CreateTodo() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <TextField
+                    <Textarea
                       name="description"
                       label="Description"
                       placeholder="Optional description..."
-                      multiline
                       rows={3}
                     />
                   </div>

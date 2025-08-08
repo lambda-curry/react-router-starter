@@ -27,31 +27,34 @@ function TestComponent() {
     <div>
       <div data-testid="todos-count">{todos.length}</div>
       <div data-testid="filter">{filter}</div>
-      <button onClick={() => addTodo('New todo')} data-testid="add-todo">
+      <button onClick={() => addTodo('New todo')} data-testid="add-todo" type="button">
         Add Todo
       </button>
       <button 
         onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} 
         data-testid="toggle-todo"
+        type="button"
       >
         Toggle First Todo
       </button>
       <button 
         onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} 
         data-testid="delete-todo"
+        type="button"
       >
         Delete First Todo
       </button>
       <button 
         onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} 
         data-testid="update-todo"
+        type="button"
       >
         Update First Todo
       </button>
-      <button onClick={() => setFilter('active')} data-testid="set-filter">
+      <button onClick={() => setFilter('active')} data-testid="set-filter" type="button">
         Set Active Filter
       </button>
-      <button onClick={() => clearCompleted()} data-testid="clear-completed">
+      <button onClick={() => clearCompleted()} data-testid="clear-completed" type="button">
         Clear Completed
       </button>
       {todos.map(todo => (
@@ -161,7 +164,7 @@ describe('todo-context', () => {
     it('throws error when used outside provider', () => {
       // Suppress console.error for this test
       const originalError = console.error;
-      console.error = () => {};
+      console.error = () => { /* intentionally noop for test */ };
       
       expect(() => {
         render(<TestComponent />);

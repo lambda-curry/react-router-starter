@@ -2,13 +2,17 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { AddTodo } from '../add-todo';
 
+// Define regex at top-level to satisfy lint/performance/useTopLevelRegex
+const ADD_REGEX = /add/i;
+
 describe('AddTodo', () => {
   it('renders input and button', () => {
     const mockOnAdd = vi.fn();
     render(<AddTodo onAdd={mockOnAdd} />);
     
     expect(screen.getByPlaceholderText('Add a new todo...')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /add/i })).toBeInTheDocument();
+    // Use top-level regex constant instead of inline literal
+    expect(screen.getByRole('button', { name: ADD_REGEX })).toBeInTheDocument();
   });
 
   it('calls onAdd when form is submitted with text', () => {
@@ -16,7 +20,7 @@ describe('AddTodo', () => {
     render(<AddTodo onAdd={mockOnAdd} />);
     
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const button = screen.getByRole('button', { name: /add/i });
+    const button = screen.getByRole('button', { name: ADD_REGEX });
     
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.click(button);
@@ -29,7 +33,7 @@ describe('AddTodo', () => {
     render(<AddTodo onAdd={mockOnAdd} />);
     
     const input = screen.getByPlaceholderText('Add a new todo...') as HTMLInputElement;
-    const button = screen.getByRole('button', { name: /add/i });
+    const button = screen.getByRole('button', { name: ADD_REGEX });
     
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.click(button);
@@ -41,7 +45,7 @@ describe('AddTodo', () => {
     const mockOnAdd = vi.fn();
     render(<AddTodo onAdd={mockOnAdd} />);
     
-    const button = screen.getByRole('button', { name: /add/i });
+    const button = screen.getByRole('button', { name: ADD_REGEX });
     fireEvent.click(button);
     
     expect(mockOnAdd).not.toHaveBeenCalled();
@@ -52,7 +56,7 @@ describe('AddTodo', () => {
     render(<AddTodo onAdd={mockOnAdd} />);
     
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const button = screen.getByRole('button', { name: /add/i });
+    const button = screen.getByRole('button', { name: ADD_REGEX });
     
     fireEvent.change(input, { target: { value: '  New todo  ' } });
     fireEvent.click(button);
@@ -60,4 +64,3 @@ describe('AddTodo', () => {
     expect(mockOnAdd).toHaveBeenCalledWith('New todo');
   });
 });
-
