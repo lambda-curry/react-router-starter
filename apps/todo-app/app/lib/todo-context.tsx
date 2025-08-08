@@ -1,5 +1,6 @@
-import { createContext, useContext, useReducer, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
 import type { Todo, TodoFilter, TodoStore } from '@todo-starter/utils';
+import { loadFromStorage, saveToStorage } from '@todo-starter/utils';
 
 // Define the action types for the reducer
 type TodoAction =
@@ -16,7 +17,7 @@ interface TodoState {
   filter: TodoFilter;
 }
 
-// Initial state
+// Initial state (used if no persisted state exists)
 const initialState: TodoState = {
   todos: [
     {
@@ -113,7 +114,35 @@ const TodoContext = createContext<TodoContextType | undefined>(undefined);
 
 // Provider component
 export function TodoProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(todoReducer, initialState);
+  // Hydrate from localStorage once on mount. We re-create Dates after JSON.parse.
+  const STORAGE_KEY = 'todo-app/state@v1';
+  const hydratedInitial = useMemo<TodoState>(() => {
+    const persisted = loadFromStorage<TodoState | null>(STORAGE_KEY, null);
+    if (!persisted) return initialState;
+    return {
+      ...persisted,
+      todos: (persisted.todos ?? []).map(t => ({
+        ...t,
+        createdAt: new Date(t.createdAt),
+        updatedAt: new Date(t.updatedAt)
+      }))
+    } as TodoState;
+  }, []);
+
+  const [state, dispatch] = useReducer(todoReducer, hydratedInitial);
+
+  // Persist to localStorage when todos or filter change.
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    // Skip persisting on the first render if we already hydrated from storage
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      // Ensure we write once to normalize any schema changes
+      saveToStorage(STORAGE_KEY, state);
+      return;
+    }
+    saveToStorage(STORAGE_KEY, state);
+  }, [state.todos, state.filter]);
 
   const contextValue: TodoContextType = {
     ...state,
