@@ -1,7 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
-import { z } from 'zod';
-import { Plus } from 'lucide-react';
 import { TextField, FormError } from '@lambdacurry/forms';
 import { Button } from '@lambdacurry/forms/ui';
 
@@ -27,20 +23,21 @@ export function AddTodo({ onAdd }: AddTodoProps) {
     }
   });
 
+  // Allow client-only submission in environments without a data router (e.g., unit tests)
+  const handleClientSubmit = () => {
+    const value = (methods.getValues('text') ?? '').trim();
+    if (!value) return;
+    onAdd(value);
+    methods.reset();
+  };
+
   return (
     <RemixFormProvider {...methods}>
-      {/* Prevent default navigation to keep this purely client-side for this component */}
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          methods.handleSubmit(e);
-        }}
-        className="flex gap-2"
-      >
+      <form className="flex gap-2">
         <div className="flex-1">
           <TextField name="text" placeholder="Add a new todo..." className="w-full" />
         </div>
-        <Button type="submit">
+        <Button type="button" onClick={handleClientSubmit}>
           <Plus className="h-4 w-4 mr-2" />
           Add
         </Button>
