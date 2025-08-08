@@ -31,12 +31,12 @@ describe('Todo types', () => {
     const mockStore: TodoStore = {
       todos: [],
       filter: 'all',
-      addTodo: (text: string) => void 0,
-      toggleTodo: (id: string) => void 0,
-      deleteTodo: (id: string) => void 0,
-      updateTodo: (id: string, text: string) => void 0,
-      setFilter: (filter: TodoFilter) => void 0,
-      clearCompleted: () => void 0
+      addTodo: (_text: string) => { return; },
+      toggleTodo: (_id: string) => { return; },
+      deleteTodo: (_id: string) => { return; },
+      updateTodo: (_id: string, _text: string) => { return; },
+      setFilter: (_filter: TodoFilter) => { return; },
+      clearCompleted: () => { return; }
     };
 
     expect(mockStore.todos).toEqual([]);
