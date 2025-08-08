@@ -1,5 +1,6 @@
-import { createContext, useContext, useReducer, type ReactNode } from 'react';
-import type { Todo, TodoFilter, TodoStore } from '@todo-starter/utils';
+import { createContext, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
+import type { Todo, TodoFilter } from '@todo-starter/utils';
+import { loadState, saveState } from '@todo-starter/utils';
 
 // Define the action types for the reducer
 type TodoAction =
@@ -8,7 +9,8 @@ type TodoAction =
   | { type: 'DELETE_TODO'; payload: string }
   | { type: 'UPDATE_TODO'; payload: { id: string; text: string } }
   | { type: 'SET_FILTER'; payload: TodoFilter }
-  | { type: 'CLEAR_COMPLETED' };
+  | { type: 'CLEAR_COMPLETED' }
+  | { type: 'HYDRATE'; payload: { todos: Todo[]; filter: TodoFilter } };
 
 // Define the state interface
 interface TodoState {
@@ -93,6 +95,12 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
         ...state,
         todos: state.todos.filter(todo => !todo.completed)
       };
+    case 'HYDRATE': {
+      return {
+        todos: action.payload.todos,
+        filter: action.payload.filter
+      };
+    }
     default:
       return state;
   }
@@ -114,6 +122,25 @@ const TodoContext = createContext<TodoContextType | undefined>(undefined);
 // Provider component
 export function TodoProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(todoReducer, initialState);
+
+  // Mount-only hydration
+  useEffect(() => {
+    const persisted = loadState?.();
+    if (persisted && Array.isArray(persisted.todos)) {
+      dispatch({ type: 'HYDRATE', payload: { todos: persisted.todos, filter: persisted.filter } });
+    }
+  }, []);
+
+  // Persist on todos/filter changes only
+  const persistPayload = useMemo(() => ({ todos: state.todos, filter: state.filter }), [state.todos, state.filter]);
+  const hasHydratedRef = useRef(false);
+  useEffect(() => {
+    if (!hasHydratedRef.current) {
+      hasHydratedRef.current = true;
+      return; // avoid initial mount write
+    }
+    saveState?.(persistPayload);
+  }, [persistPayload]);
 
   const contextValue: TodoContextType = {
     ...state,
