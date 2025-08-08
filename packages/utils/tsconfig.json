@@ -1,22 +1,18 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@todo-starter/ui": ["../ui/src"],
-      "@todo-starter/ui/*": ["../ui/src/*"],
-      "@todo-starter/utils": ["./src"],
-      "@todo-starter/utils/*": ["./src/*"]
-    }
+    "composite": false,
+    "noEmit": true,
+    "baseUrl": "."
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    ".turbo"
+    "build",
+    "**/*.test.ts",
+    "**/*.test.tsx"
   ]
 }
-
