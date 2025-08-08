@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RemixFormProvider, useRemixForm, getValidatedFormData } from 'remix-hook-form';
 import { z } from 'zod';
 import { useFetcher, useNavigate } from 'react-router';
-import { TextField, Checkbox, RadioGroup, DatePicker, FormError } from '@lambdacurry/forms';
+import { TextField, Checkbox, RadioGroup, DatePicker, FormError, Textarea } from '@lambdacurry/forms';
 import { Button } from '@lambdacurry/forms/ui';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo-starter/ui';
 import { ArrowLeft, Plus } from 'lucide-react';
@@ -155,11 +155,10 @@ export default function CreateTodo() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <TextField
+                    <Textarea
                       name="description"
                       label="Description"
                       placeholder="Optional description..."
-                      multiline
                       rows={3}
                     />
                   </div>

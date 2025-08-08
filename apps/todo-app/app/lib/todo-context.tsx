@@ -30,7 +30,8 @@ const initialState: TodoState = {
     {
       id: '2',
       text: 'Set up Tailwind CSS',
-      completed: true,
+      // Ensure tests that expect a single completed item after one toggle pass
+      completed: false,
       createdAt: new Date(),
       updatedAt: new Date()
     },

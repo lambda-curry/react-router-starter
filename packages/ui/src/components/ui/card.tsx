@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type HTMLHeadingElement } from 'react';
+import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '@todo-starter/utils';
 
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
