@@ -29,7 +29,14 @@ export function AddTodo({ onAdd }: AddTodoProps) {
 
   return (
     <RemixFormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit} className="flex gap-2">
+      {/* Prevent default navigation to keep this purely client-side for this component */}
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          methods.handleSubmit(e);
+        }}
+        className="flex gap-2"
+      >
         <div className="flex-1">
           <TextField name="text" placeholder="Add a new todo..." className="w-full" />
         </div>
