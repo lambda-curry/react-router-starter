@@ -31,12 +31,12 @@ describe('Todo types', () => {
     const mockStore: TodoStore = {
       todos: [],
       filter: 'all',
-      addTodo: (text: string) => {},
-      toggleTodo: (id: string) => {},
-      deleteTodo: (id: string) => {},
-      updateTodo: (id: string, text: string) => {},
-      setFilter: (filter: TodoFilter) => {},
-      clearCompleted: () => {}
+      addTodo: (text: string) => void 0,
+      toggleTodo: (id: string) => void 0,
+      deleteTodo: (id: string) => void 0,
+      updateTodo: (id: string, text: string) => void 0,
+      setFilter: (filter: TodoFilter) => void 0,
+      clearCompleted: () => void 0
     };
 
     expect(mockStore.todos).toEqual([]);
@@ -49,4 +49,3 @@ describe('Todo types', () => {
     expect(typeof mockStore.clearCompleted).toBe('function');
   });
 });
-
