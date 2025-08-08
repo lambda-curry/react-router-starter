@@ -128,11 +128,7 @@ export default function CreateTodo() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <TextField
-                      name="description"
-                      label="Description"
-                      placeholder="Optional description..."
-                    />
+                    <TextField name="description" label="Description" placeholder="Optional description..." />
                   </div>
 
                   <div>

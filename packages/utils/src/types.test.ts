@@ -20,7 +20,7 @@ describe('Todo types', () => {
 
   it('should accept valid TodoFilter values', () => {
     const filters: TodoFilter[] = ['all', 'active', 'completed'];
-    
+
     filters.forEach(filter => {
       expect(['all', 'active', 'completed']).toContain(filter);
     });

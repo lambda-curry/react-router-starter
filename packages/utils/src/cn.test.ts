@@ -32,4 +32,3 @@ describe('cn utility function', () => {
     expect(result).toBe('class1 class2 class3');
   });
 });
-
