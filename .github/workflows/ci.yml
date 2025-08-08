@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2.19'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Run Turbo lint
+        run: bun run turbo lint
+
+      - name: Run Turbo build
+        run: bun run turbo build
+
+      - name: Run Turbo typecheck
+        run: bun run turbo typecheck
+
+      - name: Run Turbo tests
+        run: bun run turbo test:ci
+
+      - name: Summary
+        run: |
+          echo "## Main Branch Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Linting passed (Biome)" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Build successful" >> $GITHUB_STEP_SUMMARY
+          echo "✅ TypeScript compilation passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All checks completed with Turbo caching" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Ready for deployment" >> $GITHUB_STEP_SUMMARY
+

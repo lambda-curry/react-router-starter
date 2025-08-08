@@ -1,0 +1,34 @@
+name: 'Bun Install'
+description: 'Install dependencies with Bun and cache'
+
+inputs:
+  bun-version:
+    description: 'Bun version to use'
+    required: false
+    default: '1.2.19'
+  cache-key:
+    description: 'Cache key for dependencies'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      if: inputs.cache-key != ''
+      with:
+        path: ~/.bun
+        key: ${{ inputs.cache-key }}
+        restore-keys: |
+          ${{ runner.os }}-deps-
+
+    - name: Install dependencies
+      shell: bash
+      run: bun install --frozen-lockfile
+
