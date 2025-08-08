@@ -1,11 +1,7 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
-<<<<<<< HEAD
 import type { MetaFunction } from 'react-router';
-=======
-import type { MetaFunction, ErrorResponse } from 'react-router';
 import { TodoProvider } from '~/lib/todo-context';
->>>>>>> origin/main
 import './globals.css';
 
 export const meta: MetaFunction = () => {
