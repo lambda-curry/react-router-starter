@@ -29,7 +29,7 @@ const initialState: TodoState = {
     {
       id: '2',
       text: 'Set up Tailwind CSS',
-      completed: true,
+      completed: false,
       createdAt: new Date(),
       updatedAt: new Date()
     },

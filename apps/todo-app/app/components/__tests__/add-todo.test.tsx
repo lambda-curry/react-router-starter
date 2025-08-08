@@ -1,13 +1,16 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { AddTodo } from '../add-todo';
-import { MemoryRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
 // Hoist regex to top-level to satisfy performance rule
 const addRegex = /add/i;
 
 function renderWithRouter(ui: React.ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
+  const router = createMemoryRouter([
+    { path: '/', element: ui }
+  ], { initialEntries: ['/'] });
+  return render(<RouterProvider router={router} />);
 }
 
 describe('AddTodo', () => {
