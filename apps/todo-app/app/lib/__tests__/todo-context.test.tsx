@@ -18,22 +18,22 @@ function TestComponent() {
     <div>
       <div data-testid="todos-count">{todos.length}</div>
       <div data-testid="filter">{filter}</div>
-      <button onClick={() => addTodo('New todo')} data-testid="add-todo">
+      <button type="button" onClick={() => addTodo('New todo')} data-testid="add-todo">
         Add Todo
       </button>
-      <button onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} data-testid="toggle-todo">
+      <button type="button" onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} data-testid="toggle-todo">
         Toggle First Todo
       </button>
-      <button onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} data-testid="delete-todo">
+      <button type="button" onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} data-testid="delete-todo">
         Delete First Todo
       </button>
-      <button onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} data-testid="update-todo">
+      <button type="button" onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} data-testid="update-todo">
         Update First Todo
       </button>
-      <button onClick={() => setFilter('active')} data-testid="set-filter">
+      <button type="button" onClick={() => setFilter('active')} data-testid="set-filter">
         Set Active Filter
       </button>
-      <button onClick={() => clearCompleted()} data-testid="clear-completed">
+      <button type="button" onClick={() => clearCompleted()} data-testid="clear-completed">
         Clear Completed
       </button>
       {todos.map(todo => (
@@ -143,7 +143,8 @@ describe('todo-context', () => {
     it('throws error when used outside provider', () => {
       // Suppress console.error for this test
       const originalError = console.error;
-      console.error = () => {};
+      // Provide a no-op replacement with a body to satisfy linter
+      console.error = (..._args: unknown[]) => { /* intentionally empty */ };
 
       expect(() => {
         render(<TestComponent />);
