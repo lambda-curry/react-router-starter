@@ -13,13 +13,25 @@ function getStorage(): StorageLike | null {
   }
 }
 
-export function loadFromStorage<T>(key: string, fallback: T): T {
+export function loadFromStorage<T>(key: string, fallback: T): T;
+export function loadFromStorage<T>(
+  key: string,
+  fallback: T,
+  validate: (value: unknown) => value is T | boolean
+): T;
+export function loadFromStorage<T>(
+  key: string,
+  fallback: T,
+  validate?: (value: unknown) => value is T | boolean
+): T {
   const storage = getStorage();
   if (!storage) return fallback;
   try {
     const raw = storage.getItem(key);
     if (!raw) return fallback;
-    return JSON.parse(raw) as T;
+    const parsed = JSON.parse(raw) as unknown;
+    if (validate && !validate(parsed)) return fallback; // Add optional validation guard
+    return parsed as T;
   } catch {
     return fallback;
   }
@@ -44,4 +56,3 @@ export function removeFromStorage(key: string): void {
     // ignore
   }
 }
-

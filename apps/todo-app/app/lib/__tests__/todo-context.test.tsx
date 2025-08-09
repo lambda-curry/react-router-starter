@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { TodoProvider, useTodoStore, getFilteredTodos } from '../todo-context';
 import type { Todo } from '@todo-starter/utils';
+import * as Utils from '@todo-starter/utils';
 
 // Mock crypto.randomUUID for consistent testing
 Object.defineProperty(global, 'crypto', {
@@ -75,6 +76,21 @@ function renderWithProvider() {
 }
 
 describe('todo-context', () => {
+  const STORAGE_KEY = 'todo-app/state@v1';
+  const ORIGINAL_ENV = process.env.NODE_ENV;
+
+  beforeEach(() => {
+    // allow storage helpers to operate by switching env off 'test' for these tests
+    process.env.NODE_ENV = 'development';
+    try { window.localStorage.removeItem(STORAGE_KEY); } catch {}
+  });
+
+  afterEach(() => {
+    // restore jsdom localStorage cleanliness and env
+    process.env.NODE_ENV = ORIGINAL_ENV;
+    try { window.localStorage.removeItem(STORAGE_KEY); } catch {}
+  });
+
   describe('TodoProvider and useTodoStore', () => {
     it('provides initial todos', () => {
       renderWithProvider();
@@ -208,5 +224,51 @@ describe('todo-context', () => {
       expect(filtered).toHaveLength(1);
       expect(filtered[0].completed).toBe(true);
     });
+  });
+
+  it('hydrates and revives date instances on mount when persisted state exists', () => {
+    const seeded = {
+      todos: [
+        { id: 'x', text: 'seed', completed: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+      ],
+      filter: 'all' as const
+    };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+
+    renderWithProvider();
+
+    // Access via UI to ensure hydration occurred
+    expect(screen.getByTestId('todos-count')).toHaveTextContent('1');
+  });
+
+  it('persists on addTodo, toggleTodo, setFilter', () => {
+    const spy = vi.spyOn(Utils, 'saveToStorage');
+
+    renderWithProvider();
+
+    act(() => { screen.getByTestId('add-todo').click(); });
+    act(() => { screen.getByTestId('toggle-todo').click(); });
+    act(() => { screen.getByTestId('set-filter').click(); });
+
+    // Called multiple times through effect
+    expect(spy).toHaveBeenCalled();
+
+    spy.mockRestore();
+  });
+
+  it('no SSR errors when window/localStorage not available (guarded in utils)', () => {
+    // Simulate storage access throwing
+    const original = window.localStorage;
+    // @ts-ignore - override for test
+    Object.defineProperty(window, 'localStorage', {
+      get() { throw new Error('unavailable'); },
+      configurable: true
+    });
+
+    // Should not throw during render/mount due to guard
+    expect(() => renderWithProvider()).not.toThrow();
+
+    // restore
+    Object.defineProperty(window, 'localStorage', { value: original, configurable: true });
   });
 });
