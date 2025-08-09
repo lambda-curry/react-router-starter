@@ -30,8 +30,8 @@ const initialState: TodoState = {
     {
       id: '2',
       text: 'Set up Tailwind CSS',
-      // Ensure tests that expect a single completed item after one toggle pass
-      completed: false,
+      // Revert: production seed should have this completed to showcase filter states
+      completed: true,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -66,9 +66,7 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
       return {
         ...state,
         todos: state.todos.map(todo =>
-          todo.id === action.payload
-            ? { ...todo, completed: !todo.completed, updatedAt: new Date() }
-            : todo
+          todo.id === action.payload ? { ...todo, completed: !todo.completed, updatedAt: new Date() } : todo
         )
       };
     case 'DELETE_TODO':
@@ -80,9 +78,7 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
       return {
         ...state,
         todos: state.todos.map(todo =>
-          todo.id === action.payload.id
-            ? { ...todo, text: action.payload.text.trim(), updatedAt: new Date() }
-            : todo
+          todo.id === action.payload.id ? { ...todo, text: action.payload.text.trim(), updatedAt: new Date() } : todo
         )
       };
     case 'SET_FILTER':
@@ -151,17 +147,12 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     addTodo: (text: string) => dispatch({ type: 'ADD_TODO', payload: text }),
     toggleTodo: (id: string) => dispatch({ type: 'TOGGLE_TODO', payload: id }),
     deleteTodo: (id: string) => dispatch({ type: 'DELETE_TODO', payload: id }),
-    updateTodo: (id: string, text: string) => 
-      dispatch({ type: 'UPDATE_TODO', payload: { id, text } }),
+    updateTodo: (id: string, text: string) => dispatch({ type: 'UPDATE_TODO', payload: { id, text } }),
     setFilter: (filter: TodoFilter) => dispatch({ type: 'SET_FILTER', payload: filter }),
     clearCompleted: () => dispatch({ type: 'CLEAR_COMPLETED' })
   };
 
-  return (
-    <TodoContext.Provider value={contextValue}>
-      {children}
-    </TodoContext.Provider>
-  );
+  return <TodoContext.Provider value={contextValue}>{children}</TodoContext.Provider>;
 }
 
 // Custom hook to use the todo context

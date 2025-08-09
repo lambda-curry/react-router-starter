@@ -1,90 +1,112 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { loadFromStorage, saveToStorage, removeFromStorage } from '@todo-starter/utils';
 
-import { loadFromStorage, type StorageLike } from '../storage';
+const KEY = 'test/storage@v1';
 
-// We'll provide a fake storage to bypass getStorage() SSR/test guard by injecting
-// directly via stubbing global window.localStorage used by our helpers.
+// Save original env to restore between tests
+const ORIGINAL_ENV = process.env.NODE_ENV;
 
-declare global {
-  interface Window {
-    __fakeStorage?: StorageLike;
-  }
-}
-
-// Helper to temporarily lift the test guard by stubbing process.env and window
-function withStorage<T>(fake: StorageLike, run: () => T): T {
-  const origNodeEnv = process.env.NODE_ENV;
-  const globalRef = globalThis as unknown as { window?: { localStorage: StorageLike } };
-  const origWindow = globalRef.window;
-
-  // Trick: temporarily change NODE_ENV so getStorage doesn't early-return
-  process.env.NODE_ENV = 'production';
-  globalRef.window = { localStorage: fake };
-
-  try {
-    return run();
-  } finally {
-    // restore
-    process.env.NODE_ENV = origNodeEnv;
-    if (origWindow === undefined) {
-      // Avoid using delete operator per lint rules
-      (globalThis as unknown as { window?: { localStorage: StorageLike } }).window = undefined;
-    } else {
-      globalRef.window = origWindow;
+describe('storage utils', () => {
+  function ensureWindowWithLocalStorage() {
+    if (typeof window === 'undefined') {
+      Object.defineProperty(globalThis, 'window', {
+        value: {} as unknown as Window & typeof globalThis,
+        configurable: true
+      });
+    }
+    if (!('localStorage' in window)) {
+      const store = new Map<string, string>();
+      Object.defineProperty(window, 'localStorage', {
+        value: {
+          getItem: (k: string) => store.get(k) ?? null,
+          setItem: (k: string, v: string) => {
+            store.set(k, v);
+          },
+          removeItem: (k: string) => {
+            store.delete(k);
+          }
+        },
+        configurable: true
+      });
     }
   }
-}
 
-describe('storage helpers', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    ensureWindowWithLocalStorage();
+    try {
+      window.localStorage.removeItem(KEY);
+    } catch {
+      // ignore
+    }
   });
 
-  it('returns parsed value when JSON is valid', () => {
-    const fake: StorageLike = {
-      getItem: (k: string) => (k === 'key' ? JSON.stringify({ a: 1 }) : null),
-      setItem: () => undefined,
-      removeItem: () => undefined,
-    };
-
-    const result = withStorage(fake, () =>
-      loadFromStorage<{ a: number }>('key', { a: 0 })
-    );
-
-    expect(result).toEqual({ a: 1 });
+  afterEach(() => {
+    process.env.NODE_ENV = ORIGINAL_ENV;
+    try {
+      window.localStorage.removeItem(KEY);
+    } catch {
+      // ignore
+    }
   });
 
-  it('falls back when JSON is malformed', () => {
-    const fake: StorageLike = {
-      getItem: (_: string) => '{"a":', // malformed
-      setItem: () => undefined,
-      removeItem: () => undefined,
-    };
-
-    const result = withStorage(fake, () =>
-      loadFromStorage<{ a: number }>('key', { a: 0 })
-    );
-
-    expect(result).toEqual({ a: 0 });
+  it('SSR/test guard disables storage (returns fallback in test env)', () => {
+    window.localStorage.setItem(KEY, JSON.stringify({ value: 123 }));
+    const result = loadFromStorage(KEY, { value: 999 });
+    expect(result).toEqual({ value: 999 });
   });
 
-  it('uses fallback when validate guard rejects', () => {
-    const fake: StorageLike = {
-      getItem: (_: string) => JSON.stringify({ a: 'oops' }),
-      setItem: () => undefined,
-      removeItem: () => undefined,
-    };
+  it('Malformed JSON returns fallback', () => {
+    process.env.NODE_ENV = 'development';
+    ensureWindowWithLocalStorage();
+    window.localStorage.setItem(KEY, '{not json');
+    const result = loadFromStorage(KEY, { good: true });
+    expect(result).toEqual({ good: true });
+  });
 
-    const isNumberA = (v: unknown): v is { a: number } => {
-      if (typeof v !== 'object' || v === null) return false;
-      const obj = v as Record<string, unknown>;
-      return typeof obj.a === 'number';
-    };
+  it('save/remove round-trip behavior works', () => {
+    process.env.NODE_ENV = 'development';
+    ensureWindowWithLocalStorage();
 
-    const result = withStorage(fake, () =>
-      loadFromStorage('key', { a: 0 }, isNumberA)
+    const value = { a: 1, b: 'two' };
+    saveToStorage(KEY, value);
+
+    const loaded = loadFromStorage<typeof value | null>(KEY, null);
+    expect(loaded).toEqual(value);
+
+    removeFromStorage(KEY);
+    const afterRemove = loadFromStorage<typeof value | null>(KEY, null);
+    expect(afterRemove).toBeNull();
+  });
+
+  it('validate guard: rejects invalid shape and returns fallback', () => {
+    process.env.NODE_ENV = 'development';
+    ensureWindowWithLocalStorage();
+
+    window.localStorage.setItem(KEY, JSON.stringify({ nope: true }));
+
+    const fallback = { ok: true };
+    const result = loadFromStorage(
+      KEY,
+      fallback,
+      (v): v is typeof fallback =>
+        typeof v === 'object' && v !== null && 'ok' in v && typeof (v as { ok: unknown }).ok === 'boolean'
     );
+    expect(result).toEqual(fallback);
+  });
 
-    expect(result).toEqual({ a: 0 });
+  it('validate guard: accepts valid shape', () => {
+    process.env.NODE_ENV = 'development';
+    ensureWindowWithLocalStorage();
+
+    const value = { ok: true };
+    window.localStorage.setItem(KEY, JSON.stringify(value));
+
+    const result = loadFromStorage(
+      KEY,
+      { ok: false },
+      (v): v is typeof value =>
+        typeof v === 'object' && v !== null && 'ok' in v && typeof (v as { ok: unknown }).ok === 'boolean'
+    );
+    expect(result).toEqual(value);
   });
 });
