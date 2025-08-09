@@ -2,6 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "vite/client"
+    ],
     "paths": {
       "~/*": ["./app/*"],
       "@todo-starter/ui": ["../../packages/ui/src"],
@@ -21,8 +26,6 @@
   "exclude": [
     "node_modules",
     "build",
-    "dist",
-    "**/*.test.ts",
-    "**/*.test.tsx"
+    "dist"
   ]
 }
