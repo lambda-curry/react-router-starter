@@ -21,6 +21,7 @@ export function AddTodo({ onAdd }: AddTodoProps) {
     defaultValues: { text: '' },
     submitHandlers: {
       onValid: data => {
+        // Since we're not using a database we're catching this early and not actually submitting the form to a server
         onAdd(data.text);
         methods.reset();
       }

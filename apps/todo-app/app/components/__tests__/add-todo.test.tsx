@@ -121,9 +121,10 @@ describe('AddTodo', () => {
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: ADD_REGEX });
+    const form = button.closest('form') as HTMLFormElement;
 
     fireEvent.change(input, { target: { value: 'New todo' } });
-    fireEvent.click(button);
+    fireEvent.submit(form);
 
     expect(mockOnAdd).toHaveBeenCalledWith('New todo');
   });
@@ -134,9 +135,10 @@ describe('AddTodo', () => {
 
     const input = screen.getByPlaceholderText('Add a new todo...') as HTMLInputElement;
     const button = screen.getByRole('button', { name: ADD_REGEX });
+    const form = button.closest('form') as HTMLFormElement;
 
     fireEvent.change(input, { target: { value: 'New todo' } });
-    fireEvent.click(button);
+    fireEvent.submit(form);
 
     expect(input.value).toBe('');
   });
@@ -146,7 +148,8 @@ describe('AddTodo', () => {
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const button = screen.getByRole('button', { name: ADD_REGEX });
-    fireEvent.click(button);
+    const form = button.closest('form') as HTMLFormElement;
+    fireEvent.submit(form);
 
     expect(mockOnAdd).not.toHaveBeenCalled();
   });
@@ -157,9 +160,10 @@ describe('AddTodo', () => {
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: ADD_REGEX });
+    const form = button.closest('form') as HTMLFormElement;
 
     fireEvent.change(input, { target: { value: '  New todo  ' } });
-    fireEvent.click(button);
+    fireEvent.submit(form);
 
     expect(mockOnAdd).toHaveBeenCalledWith('New todo');
   });
