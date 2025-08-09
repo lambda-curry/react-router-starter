@@ -29,7 +29,7 @@ vi.mock('remix-hook-form', () => {
   } as any;
 });
 
-// Mock UI TextField to a plain input
+// Mock TextField to a plain input
 vi.mock('@lambdacurry/forms', () => {
   return {
     TextField: ({ name, placeholder, className }: { name: string; placeholder?: string; className?: string }) => (
