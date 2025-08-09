@@ -1,5 +1,45 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+
+// Mock remix-hook-form to avoid Router dependency in unit tests
+vi.mock('remix-hook-form', () => {
+  let onValid: ((data: { text: string }) => void) | undefined;
+  return {
+    RemixFormProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    useRemixForm: (config?: { submitHandlers?: { onValid?: (data: { text: string }) => void } }) => {
+      onValid = config?.submitHandlers?.onValid;
+      const api: any = {
+        handleSubmit: (e?: React.FormEvent) => {
+          e?.preventDefault?.();
+          const input = document.querySelector('input[name="text"]') as HTMLInputElement | null;
+          const raw = input?.value ?? '';
+          const trimmed = raw.trim();
+          if (!trimmed) return; // mimic zod min(1)
+          onValid?.({ text: trimmed });
+          // mimic methods.reset() effect on DOM
+          if (input) input.value = '';
+        },
+        reset: () => {
+          const input = document.querySelector('input[name="text"]') as HTMLInputElement | null;
+          if (input) input.value = '';
+        },
+      };
+      return api;
+    },
+  } as any;
+});
+
+// Mock UI TextField to a plain input
+vi.mock('@lambdacurry/forms', () => {
+  return {
+    TextField: ({ name, placeholder, className }: { name: string; placeholder?: string; className?: string }) => (
+      <input name={name} placeholder={placeholder} className={className} />
+    ),
+    FormError: () => null,
+  } as any;
+});
+
+// Import after mocks so component sees mocked modules
 import { AddTodo } from '../add-todo';
 
 // hoist regex literals to top-level to satisfy biome's useTopLevelRegex
