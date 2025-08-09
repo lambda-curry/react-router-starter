@@ -12,6 +12,7 @@
     "typecheck": "bun run turbo run typecheck",
     "biome-fix": "bun run biome check --fix",
     "test": "bun run turbo run test",
+    "test:watch": "bun run turbo run test:watch",
     "test:ci": "bun run turbo run test:ci"
   },
   "dependencies": {
