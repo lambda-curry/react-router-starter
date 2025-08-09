@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useReducer, useRef, useState, type ReactNode } from 'react';
 import type { Todo, TodoFilter } from '@todo-starter/utils';
 import { loadFromStorage, saveToStorage } from '@todo-starter/utils';
 
@@ -9,7 +9,8 @@ type TodoAction =
   | { type: 'DELETE_TODO'; payload: string }
   | { type: 'UPDATE_TODO'; payload: { id: string; text: string } }
   | { type: 'SET_FILTER'; payload: TodoFilter }
-  | { type: 'CLEAR_COMPLETED' };
+  | { type: 'CLEAR_COMPLETED' }
+  | { type: 'HYDRATE'; payload: TodoState };
 
 // Define the state interface
 interface TodoState {
@@ -49,6 +50,8 @@ const initialState: TodoState = {
 // Reducer function
 function todoReducer(state: TodoState, action: TodoAction): TodoState {
   switch (action.type) {
+    case 'HYDRATE':
+      return action.payload;
     case 'ADD_TODO': {
       const newTodo: Todo = {
         id: crypto.randomUUID(),
@@ -111,34 +114,41 @@ const TodoContext = createContext<TodoContextType | undefined>(undefined);
 
 // Provider component
 export function TodoProvider({ children }: { children: ReactNode }) {
-  // Hydrate from localStorage once on mount. We re-create Dates after JSON.parse.
+  // Key used for persistence
   const STORAGE_KEY = 'todo-app/state@v1';
-  const hydratedInitial = useMemo<TodoState>(() => {
-    const persisted = loadFromStorage<TodoState | null>(STORAGE_KEY, null);
-    if (!persisted) return initialState;
-    return {
-      ...persisted,
-      todos: (persisted.todos ?? []).map(t => ({
-        ...t,
-        createdAt: new Date(t.createdAt),
-        updatedAt: new Date(t.updatedAt)
-      }))
-    } as TodoState;
-  }, []);
 
-  const [state, dispatch] = useReducer(todoReducer, hydratedInitial);
+  // Start with SSR-safe initial state; hydrate on client in an effect to avoid SSR/CSR mismatch
+  const [state, dispatch] = useReducer(todoReducer, initialState);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Persist to localStorage when todos or filter change.
   const isFirstRender = useRef(true);
   // biome-ignore lint/correctness/useExhaustiveDependencies: persist only when todos/filter change; other values are stable
   useEffect(() => {
-    // Skip persisting on the first render if we already hydrated from storage
+    // On mount, perform hydration from localStorage (client only)
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      // Ensure we write once to normalize any schema changes
-      saveToStorage(STORAGE_KEY, state);
+      const persisted = loadFromStorage<TodoState | null>(STORAGE_KEY, null);
+      if (persisted) {
+        const revived: TodoState = {
+          ...persisted,
+          todos: (persisted.todos ?? []).map(t => ({
+            ...t,
+            createdAt: new Date(t.createdAt),
+            updatedAt: new Date(t.updatedAt)
+          }))
+        } as TodoState;
+        dispatch({ type: 'HYDRATE', payload: revived });
+        // Write back once to normalize
+        saveToStorage(STORAGE_KEY, revived);
+      } else {
+        // Ensure we write initial state once to create the key
+        saveToStorage(STORAGE_KEY, state);
+      }
+      setIsHydrated(true);
       return;
     }
+    // Persist subsequent changes
     saveToStorage(STORAGE_KEY, state);
   }, [state.todos, state.filter]);
 
@@ -152,7 +162,8 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     clearCompleted: () => dispatch({ type: 'CLEAR_COMPLETED' })
   };
 
-  return <TodoContext.Provider value={contextValue}>{children}</TodoContext.Provider>;
+  // Avoid SSR->CSR flash by rendering children only after client hydration
+  return <TodoContext.Provider value={contextValue}>{isHydrated ? children : null}</TodoContext.Provider>;
 }
 
 // Custom hook to use the todo context

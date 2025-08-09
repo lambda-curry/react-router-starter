@@ -27,21 +27,13 @@ export function AddTodo({ onAdd }: AddTodoProps) {
     }
   });
 
-  // Allow client-only submission in environments without a data router (e.g., unit tests)
-  const handleClientSubmit = () => {
-    const value = (methods.getValues('text') ?? '').trim();
-    if (!value) return;
-    onAdd(value);
-    methods.reset();
-  };
-
   return (
     <RemixFormProvider {...methods}>
-      <form className="flex gap-2">
+      <form className="flex gap-2" onSubmit={methods.handleSubmit}>
         <div className="flex-1">
           <TextField name="text" placeholder="Add a new todo..." className="w-full" />
         </div>
-        <Button type="button" onClick={handleClientSubmit}>
+        <Button type="submit">
           <Plus className="h-4 w-4 mr-2" />
           Add
         </Button>
