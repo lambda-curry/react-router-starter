@@ -16,7 +16,7 @@
     "lint": "biome lint .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
+    "test": "vitest --passWithNoTests",
     "test:ci": "vitest run --passWithNoTests"
   },
   "devDependencies": {
