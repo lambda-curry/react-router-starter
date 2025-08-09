@@ -18,4 +18,3 @@ export interface TodoStore {
   setFilter: (filter: TodoFilter) => void;
   clearCompleted: () => void;
 }
-

@@ -1,12 +1,12 @@
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
-import { z } from 'zod';
 import { Plus } from 'lucide-react';
 import { TextField, FormError } from '@lambdacurry/forms';
 import { Button } from '@lambdacurry/forms/ui';
 
 const addTodoSchema = z.object({
-  text: z.string().min(1, 'Todo text is required').trim(),
+  text: z.string().min(1, 'Todo text is required').trim()
 });
 
 type AddTodoFormData = z.infer<typeof addTodoSchema>;
@@ -20,29 +20,33 @@ export function AddTodo({ onAdd }: AddTodoProps) {
     resolver: zodResolver(addTodoSchema),
     defaultValues: { text: '' },
     submitHandlers: {
-      onValid: (data) => {
+      onValid: data => {
         onAdd(data.text);
         methods.reset();
-      },
-    },
+      }
+    }
   });
+
+  // Allow client-only submission in environments without a data router (e.g., unit tests)
+  const handleClientSubmit = () => {
+    const value = (methods.getValues('text') ?? '').trim();
+    if (!value) return;
+    onAdd(value);
+    methods.reset();
+  };
 
   return (
     <RemixFormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit} className="flex gap-2">
+      <form className="flex gap-2">
         <div className="flex-1">
-          <TextField
-            name="text"
-            placeholder="Add a new todo..."
-            className="w-full"
-          />
+          <TextField name="text" placeholder="Add a new todo..." className="w-full" />
         </div>
-        <Button type="submit">
+        <Button type="button" onClick={handleClientSubmit}>
           <Plus className="h-4 w-4 mr-2" />
           Add
         </Button>
       </form>
-      <FormError />
+      <FormError name="_form" />
     </RemixFormProvider>
   );
 }

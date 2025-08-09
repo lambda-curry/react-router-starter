@@ -13,16 +13,7 @@ Object.defineProperty(global, 'crypto', {
 
 // Test component to access the context
 function TestComponent() {
-  const {
-    todos,
-    filter,
-    addTodo,
-    toggleTodo,
-    deleteTodo,
-    updateTodo,
-    setFilter,
-    clearCompleted
-  } = useTodoStore();
+  const { todos, filter, addTodo, toggleTodo, deleteTodo, updateTodo, setFilter, clearCompleted } = useTodoStore();
 
   return (
     <div>
@@ -94,86 +85,86 @@ describe('todo-context', () => {
   describe('TodoProvider and useTodoStore', () => {
     it('provides initial todos', () => {
       renderWithProvider();
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('3');
       expect(screen.getByTestId('filter')).toHaveTextContent('all');
     });
 
     it('adds a new todo', () => {
       renderWithProvider();
-      
+
       act(() => {
         screen.getByTestId('add-todo').click();
       });
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('4');
       expect(screen.getByTestId('todo-test-uuid')).toHaveTextContent('New todo - active');
     });
 
     it('toggles todo completion status', () => {
       renderWithProvider();
-      
+
       // First todo should be active initially
       expect(screen.getByTestId('todo-1')).toHaveTextContent('Learn React Router 7 - active');
-      
+
       act(() => {
         screen.getByTestId('toggle-todo').click();
       });
-      
+
       expect(screen.getByTestId('todo-1')).toHaveTextContent('Learn React Router 7 - completed');
     });
 
     it('deletes a todo', () => {
       renderWithProvider();
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('3');
-      
+
       act(() => {
         screen.getByTestId('delete-todo').click();
       });
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('2');
       expect(screen.queryByTestId('todo-1')).not.toBeInTheDocument();
     });
 
     it('updates todo text', () => {
       renderWithProvider();
-      
+
       expect(screen.getByTestId('todo-1')).toHaveTextContent('Learn React Router 7 - active');
-      
+
       act(() => {
         screen.getByTestId('update-todo').click();
       });
-      
+
       expect(screen.getByTestId('todo-1')).toHaveTextContent('Updated text - active');
     });
 
     it('sets filter', () => {
       renderWithProvider();
-      
+
       expect(screen.getByTestId('filter')).toHaveTextContent('all');
-      
+
       act(() => {
         screen.getByTestId('set-filter').click();
       });
-      
+
       expect(screen.getByTestId('filter')).toHaveTextContent('active');
     });
 
     it('clears completed todos', () => {
       renderWithProvider();
-      
+
       // Toggle first todo to completed
       act(() => {
         screen.getByTestId('toggle-todo').click();
       });
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('3');
-      
+
       act(() => {
         screen.getByTestId('clear-completed').click();
       });
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('2');
     });
 
@@ -185,7 +176,7 @@ describe('todo-context', () => {
       expect(() => {
         render(<TestComponent />);
       }).toThrow('useTodoStore must be used within a TodoProvider');
-      
+
       console.error = originalError;
     });
   });
