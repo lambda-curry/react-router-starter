@@ -9,7 +9,7 @@ let testInputValue = '';
 
 // Mock lucide-react icons
 vi.mock('lucide-react', () => ({
-  Plus: () => null,
+  Plus: () => null
 }));
 
 // Mock the @lambdacurry/forms components
@@ -27,10 +27,12 @@ vi.mock('@lambdacurry/forms', () => ({
       className={className}
       type="text"
       value={testInputValue}
-      onChange={(e) => { testInputValue = e.target.value; }}
+      onChange={e => {
+        testInputValue = e.target.value;
+      }}
     />
   ),
-  FormError: () => null,
+  FormError: () => null
 }));
 
 interface ButtonProps {
@@ -44,7 +46,7 @@ vi.mock('@lambdacurry/forms/ui', () => ({
     <button type={type} onClick={onClick}>
       {children}
     </button>
-  ),
+  )
 }));
 
 // Mock the remix-hook-form module
@@ -86,15 +88,13 @@ vi.mock('remix-hook-form', () => ({
         }
       }),
       formState: { errors: {} },
-      watch: vi.fn((_name: string) => testInputValue),
+      watch: vi.fn((_name: string) => testInputValue)
     };
   }
 }));
 
 function renderWithRouter(ui: ReactElement) {
-  const router = createMemoryRouter([
-    { path: '/', element: ui }
-  ], { initialEntries: ['/'] });
+  const router = createMemoryRouter([{ path: '/', element: ui }], { initialEntries: ['/'] });
   return render(<RouterProvider router={router} />);
 }
 
@@ -121,7 +121,7 @@ describe('AddTodo', () => {
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: ADD_REGEX });
-    
+
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.click(button);
 
@@ -134,7 +134,7 @@ describe('AddTodo', () => {
 
     const input = screen.getByPlaceholderText('Add a new todo...') as HTMLInputElement;
     const button = screen.getByRole('button', { name: ADD_REGEX });
-    
+
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.click(button);
 
@@ -144,7 +144,7 @@ describe('AddTodo', () => {
   it('does not call onAdd with empty text', () => {
     const mockOnAdd = vi.fn();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
-    
+
     const button = screen.getByRole('button', { name: ADD_REGEX });
     fireEvent.click(button);
 
@@ -157,7 +157,7 @@ describe('AddTodo', () => {
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: ADD_REGEX });
-    
+
     fireEvent.change(input, { target: { value: '  New todo  ' } });
     fireEvent.click(button);
 

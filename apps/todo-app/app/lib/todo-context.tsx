@@ -30,8 +30,8 @@ const initialState: TodoState = {
     {
       id: '2',
       text: 'Set up Tailwind CSS',
-      // Ensure tests that expect a single completed item after one toggle pass
-      completed: false,
+      // Revert: production seed should have this completed to showcase filter states
+      completed: true,
       createdAt: new Date(),
       updatedAt: new Date()
     },
