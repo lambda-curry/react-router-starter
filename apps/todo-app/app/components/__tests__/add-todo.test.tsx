@@ -57,41 +57,58 @@ interface RemixFormConfig {
   [key: string]: unknown;
 }
 
-vi.mock('remix-hook-form', () => ({
-  RemixFormProvider: ({ children }: { children: ReactNode }) => children,
-  useRemixForm: (config: RemixFormConfig) => {
-    return {
-      ...config,
-      getValues: (_name: string) => testInputValue,
-      reset: vi.fn(() => {
-        testInputValue = '';
-        // Force re-render by dispatching a custom event
-        const inputs = document.querySelectorAll('input[name="text"]');
-        inputs.forEach(input => {
-          (input as HTMLInputElement).value = '';
-        });
-      }),
-      setValue: vi.fn((_name: string, value: string) => {
-        testInputValue = value;
-      }),
-      register: vi.fn((name: string) => ({
-        name,
-        onChange: (e: ChangeEvent<HTMLInputElement>) => {
-          testInputValue = e.target.value;
-        },
-        value: testInputValue
-      })),
-      handleSubmit: vi.fn((onValid: (data: { text: string }) => void) => (e: FormEvent) => {
-        e.preventDefault();
-        if (testInputValue?.trim()) {
-          onValid({ text: testInputValue.trim() });
-        }
-      }),
-      formState: { errors: {} },
-      watch: vi.fn((_name: string) => testInputValue)
-    };
-  }
-}));
+vi.mock('remix-hook-form', () => {
+  let latestConfig: RemixFormConfig | undefined;
+  return {
+    RemixFormProvider: ({ children }: { children: ReactNode }) => children,
+    useRemixForm: (config: RemixFormConfig) => {
+      latestConfig = config;
+      return {
+        ...config,
+        getValues: (_name: string) => testInputValue,
+        reset: vi.fn(() => {
+          testInputValue = '';
+          // Force re-render by dispatching a custom event
+          const inputs = document.querySelectorAll('input[name="text"]');
+          inputs.forEach(input => {
+            (input as HTMLInputElement).value = '';
+          });
+        }),
+        setValue: vi.fn((_name: string, value: string) => {
+          testInputValue = value;
+        }),
+        register: vi.fn((name: string) => ({
+          name,
+          onChange: (e: ChangeEvent<HTMLInputElement>) => {
+            testInputValue = e.target.value;
+          },
+          value: testInputValue
+        })),
+        handleSubmit: vi.fn((arg?: unknown) => {
+          // Support both usages:
+          // 1) onSubmit={methods.handleSubmit}  → arg is the FormEvent
+          // 2) onSubmit={methods.handleSubmit(onValid)} → arg is the onValid callback
+          const isEvent = arg && typeof (arg as FormEvent).preventDefault === 'function';
+          if (isEvent) {
+            const e = arg as FormEvent;
+            e.preventDefault();
+            const onValid = latestConfig?.submitHandlers?.onValid;
+            if (onValid && testInputValue?.trim()) onValid({ text: testInputValue.trim() });
+            return undefined;
+          }
+          const maybeOnValid = arg as ((data: { text: string }) => void) | undefined;
+          return (e: FormEvent) => {
+            e.preventDefault();
+            const onValid = maybeOnValid || latestConfig?.submitHandlers?.onValid;
+            if (onValid && testInputValue?.trim()) onValid({ text: testInputValue.trim() });
+          };
+        }),
+        formState: { errors: {} },
+        watch: vi.fn((_name: string) => testInputValue)
+      };
+    }
+  };
+});
 
 function renderWithRouter(ui: ReactElement) {
   const router = createMemoryRouter([{ path: '/', element: ui }], { initialEntries: ['/'] });
