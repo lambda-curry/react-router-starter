@@ -1,9 +1,97 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AddTodo } from '../add-todo';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import type { ReactElement, ReactNode, ChangeEvent, FormEvent } from 'react';
 
-function renderWithRouter(ui: React.ReactElement) {
+// Create a stateful mock for the input field
+let testInputValue = '';
+
+// Mock lucide-react icons
+vi.mock('lucide-react', () => ({
+  Plus: () => null,
+}));
+
+// Mock the @lambdacurry/forms components
+interface TextFieldProps {
+  name: string;
+  placeholder: string;
+  className: string;
+}
+
+vi.mock('@lambdacurry/forms', () => ({
+  TextField: ({ name, placeholder, className }: TextFieldProps) => (
+    <input
+      name={name}
+      placeholder={placeholder}
+      className={className}
+      type="text"
+      value={testInputValue}
+      onChange={(e) => { testInputValue = e.target.value; }}
+    />
+  ),
+  FormError: () => null,
+}));
+
+interface ButtonProps {
+  children: ReactNode;
+  onClick: () => void;
+  type: 'button' | 'submit' | 'reset';
+}
+
+vi.mock('@lambdacurry/forms/ui', () => ({
+  Button: ({ children, onClick, type }: ButtonProps) => (
+    <button type={type} onClick={onClick}>
+      {children}
+    </button>
+  ),
+}));
+
+// Mock the remix-hook-form module
+interface RemixFormConfig {
+  submitHandlers?: {
+    onValid: (data: { text: string }) => void;
+  };
+  [key: string]: unknown;
+}
+
+vi.mock('remix-hook-form', () => ({
+  RemixFormProvider: ({ children }: { children: ReactNode }) => children,
+  useRemixForm: (config: RemixFormConfig) => {
+    return {
+      ...config,
+      getValues: (_name: string) => testInputValue,
+      reset: vi.fn(() => {
+        testInputValue = '';
+        // Force re-render by dispatching a custom event
+        const inputs = document.querySelectorAll('input[name="text"]');
+        inputs.forEach(input => {
+          (input as HTMLInputElement).value = '';
+        });
+      }),
+      setValue: vi.fn((_name: string, value: string) => {
+        testInputValue = value;
+      }),
+      register: vi.fn((name: string) => ({
+        name,
+        onChange: (e: ChangeEvent<HTMLInputElement>) => {
+          testInputValue = e.target.value;
+        },
+        value: testInputValue
+      })),
+      handleSubmit: vi.fn((onValid: (data: { text: string }) => void) => (e: FormEvent) => {
+        e.preventDefault();
+        if (testInputValue?.trim()) {
+          onValid({ text: testInputValue.trim() });
+        }
+      }),
+      formState: { errors: {} },
+      watch: vi.fn((_name: string) => testInputValue),
+    };
+  }
+}));
+
+function renderWithRouter(ui: ReactElement) {
   const router = createMemoryRouter([
     { path: '/', element: ui }
   ], { initialEntries: ['/'] });
@@ -13,10 +101,12 @@ function renderWithRouter(ui: React.ReactElement) {
 // hoist regex literals to top-level to satisfy biome's useTopLevelRegex
 const ADD_REGEX = /add/i;
 
-// hoist regex literals to top-level to satisfy biome's useTopLevelRegex
-const ADD_REGEX = /add/i;
-
 describe('AddTodo', () => {
+  beforeEach(() => {
+    // Reset the test state before each test
+    testInputValue = '';
+  });
+
   it('renders input and button', () => {
     const mockOnAdd = vi.fn();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
@@ -53,7 +143,7 @@ describe('AddTodo', () => {
 
   it('does not call onAdd with empty text', () => {
     const mockOnAdd = vi.fn();
-    render(<AddTodo onAdd={mockOnAdd} />);
+    renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
     
     const button = screen.getByRole('button', { name: ADD_REGEX });
     fireEvent.click(button);

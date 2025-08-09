@@ -29,11 +29,18 @@
     },
     "test": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "vitest.config.*"],
       "outputs": []
     },
+    "test:watch": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "vitest.config.*"],
+      "outputs": [],
+      "cache": false,
+      "persistent": true
+    },
     "test:ci": {
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "vitest.config.*"],
       "outputs": []
     }
   }
