@@ -1,6 +1,7 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import type { MetaFunction } from 'react-router';
+import { TodoProvider } from '~/lib/todo-context';
 import './globals.css';
 
 export const meta: MetaFunction = () => {
@@ -20,7 +21,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <TodoProvider>
+          <Outlet />
+        </TodoProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

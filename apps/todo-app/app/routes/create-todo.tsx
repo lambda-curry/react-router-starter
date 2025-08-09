@@ -128,11 +128,7 @@ export default function CreateTodo() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <TextField
-                      name="description"
-                      label="Description"
-                      placeholder="Optional description..."
-                    />
+                    <TextField name="description" label="Description" placeholder="Optional description..." />
                   </div>
 
                   <div>
@@ -171,7 +167,7 @@ export default function CreateTodo() {
                   </div>
                 )}
 
-                <FormError />
+                <FormError name="_form" />
 
                 <div className="flex gap-3 pt-4">
                   <Button type="submit" disabled={isSubmitting} className="flex-1">

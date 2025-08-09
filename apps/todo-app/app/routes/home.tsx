@@ -5,7 +5,7 @@ import { Button } from '@lambdacurry/forms/ui';
 import { AddTodo } from '~/components/add-todo';
 import { TodoItem } from '~/components/todo-item';
 import { TodoFilters } from '~/components/todo-filters';
-import { useTodoStore, getFilteredTodos } from '~/lib/todo-store';
+import { useTodoStore, getFilteredTodos } from '~/lib/todo-context';
 import { Settings } from 'lucide-react';
 
 export const meta: MetaFunction = () => {

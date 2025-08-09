@@ -20,7 +20,7 @@ describe('Todo types', () => {
 
   it('should accept valid TodoFilter values', () => {
     const filters: TodoFilter[] = ['all', 'active', 'completed'];
-    
+
     filters.forEach(filter => {
       expect(['all', 'active', 'completed']).toContain(filter);
     });
@@ -31,12 +31,12 @@ describe('Todo types', () => {
     const mockStore: TodoStore = {
       todos: [],
       filter: 'all',
-      addTodo: (text: string) => {},
-      toggleTodo: (id: string) => {},
-      deleteTodo: (id: string) => {},
-      updateTodo: (id: string, text: string) => {},
-      setFilter: (filter: TodoFilter) => {},
-      clearCompleted: () => {}
+      addTodo: (_text: string) => { return; },
+      toggleTodo: (_id: string) => { return; },
+      deleteTodo: (_id: string) => { return; },
+      updateTodo: (_id: string, _text: string) => { return; },
+      setFilter: (_filter: TodoFilter) => { return; },
+      clearCompleted: () => { return; }
     };
 
     expect(mockStore.todos).toEqual([]);
@@ -49,4 +49,3 @@ describe('Todo types', () => {
     expect(typeof mockStore.clearCompleted).toBe('function');
   });
 });
-
