@@ -16,16 +16,7 @@ const COMPLETED_REGEX = / - completed$/;
 
 // Test component to access the context
 function TestComponent() {
-  const {
-    todos,
-    filter,
-    addTodo,
-    toggleTodo,
-    deleteTodo,
-    updateTodo,
-    setFilter,
-    clearCompleted
-  } = useTodoStore();
+  const { todos, filter, addTodo, toggleTodo, deleteTodo, updateTodo, setFilter, clearCompleted } = useTodoStore();
 
   return (
     <div>
@@ -34,23 +25,15 @@ function TestComponent() {
       <button type="button" onClick={() => addTodo('New todo')} data-testid="add-todo">
         Add Todo
       </button>
-      <button 
-        type="button"
-        onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} 
-        data-testid="toggle-todo"
-      >
+      <button type="button" onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} data-testid="toggle-todo">
         Toggle First Todo
       </button>
-      <button 
-        type="button"
-        onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} 
-        data-testid="delete-todo"
-      >
+      <button type="button" onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} data-testid="delete-todo">
         Delete First Todo
       </button>
-      <button 
+      <button
         type="button"
-        onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} 
+        onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')}
         data-testid="update-todo"
       >
         Update First Todo
@@ -78,7 +61,7 @@ function renderWithProvider() {
   );
 }
 
-vi.mock('@todo-starter/utils', async (importOriginal) => {
+vi.mock('@todo-starter/utils', async importOriginal => {
   // Keep non-storage exports from utils, but override storage helpers to be no-ops in tests
   const actual = await importOriginal<Record<string, unknown>>();
   const memory = new Map<string, string>();
@@ -111,79 +94,77 @@ describe('todo-context', () => {
 
     it('provides initial todos', () => {
       renderWithProvider();
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('3');
       expect(screen.getByTestId('filter')).toHaveTextContent('all');
     });
 
     it('adds a new todo', () => {
       renderWithProvider();
-      
+
       act(() => {
         screen.getByTestId('add-todo').click();
       });
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('4');
       expect(screen.getByTestId('todo-test-uuid')).toHaveTextContent('New todo - active');
     });
 
     it('toggles todo completion status', () => {
       renderWithProvider();
-      
-      // First todo should be present; initial completed/active state may vary by seed
+
+      // First todo should be present; avoid coupling to seed-determined state
       expect(screen.getByTestId('todo-1')).toBeInTheDocument();
-      
+
       act(() => {
         screen.getByTestId('toggle-todo').click();
       });
-      
-      // After toggle, the state flips
+
       const firstAfter = screen.getByTestId('todo-1').textContent ?? '';
       expect(firstAfter.includes(' - completed') || firstAfter.includes(' - active')).toBe(true);
     });
 
     it('deletes a todo', () => {
       renderWithProvider();
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('3');
-      
+
       act(() => {
         screen.getByTestId('delete-todo').click();
       });
-      
+
       expect(screen.getByTestId('todos-count')).toHaveTextContent('2');
       expect(screen.queryByTestId('todo-1')).not.toBeInTheDocument();
     });
 
     it('updates todo text', () => {
       renderWithProvider();
-      
+
       // Assert presence without coupling to seed-computed state
       expect(screen.getByTestId('todo-1')).toBeInTheDocument();
-      
+
       act(() => {
         screen.getByTestId('update-todo').click();
       });
-      
+
       const updatedText = screen.getByTestId('todo-1').textContent ?? '';
       expect(updatedText.startsWith('Updated text - ')).toBe(true);
     });
 
     it('sets filter', () => {
       renderWithProvider();
-      
+
       expect(screen.getByTestId('filter')).toHaveTextContent('all');
-      
+
       act(() => {
         screen.getByTestId('set-filter').click();
       });
-      
+
       expect(screen.getByTestId('filter')).toHaveTextContent('active');
     });
 
     it('clears completed todos', () => {
       renderWithProvider();
-
       // Record initial count to avoid relying on seed values
       const initialCount = Number(screen.getByTestId('todos-count').textContent);
 
@@ -228,11 +209,11 @@ describe('todo-context', () => {
       // Suppress console.error for this test
       const originalError = console.error;
       console.error = () => undefined;
-      
+
       expect(() => {
         render(<TestComponent />);
       }).toThrow('useTodoStore must be used within a TodoProvider');
-      
+
       console.error = originalError;
     });
   });
