@@ -1,5 +1,6 @@
 @import "tailwindcss";
-
+@source "../../packages/ui/src/components/ui/**/*.{ts,tsx}";
+@source "../../../node_modules/@lambdacurry/forms/**/*.{js,ts,tsx}";
 
 @theme inline {
   --breakpoint-3xl: 1600px;
@@ -161,26 +162,6 @@
   button:active {
     @apply opacity-60 md:opacity-100;
   }
-}
-
-@utility border-grid {
-  @apply border-border/50 dark:border-border;
-}
-
-@utility section-soft {
-  @apply from-background to-surface/40 dark:bg-background 3xl:fixed 3xl:bg-none bg-gradient-to-b;
-}
-
-@utility theme-container {
-  @apply font-sans;
-}
-
-@utility container-wrapper {
-  @apply 3xl:fixed 3xl:max-w-[calc(var(--breakpoint-2xl)+2rem)] mx-auto w-full px-2;
-}
-
-@utility container {
-  @apply 3xl:max-w-screen-2xl mx-auto max-w-[1400px] px-4 lg:px-8;
 }
 
 @utility no-scrollbar {
