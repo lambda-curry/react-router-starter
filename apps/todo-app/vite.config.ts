@@ -7,4 +7,3 @@ export default defineConfig({
   // Plugin order can matter; React Router first, then path resolutions, then Tailwind
   plugins: [reactRouter(), tsconfigPaths(), tailwindcss()]
 });
-

@@ -4,4 +4,3 @@ export default {
   ssr: true,
   prerender: ['/']
 } satisfies Config;
-

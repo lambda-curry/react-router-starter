@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @source "../../packages/ui/src/components/ui/**/*.{ts,tsx}";
-@source "../../../node_modules/@lambdacurry/forms/**/*.{js,ts,tsx}";
+@source "../../../node_modules/@lambdacurry/forms/dist/**/*.{js,ts,tsx}";
 
 @theme inline {
   --breakpoint-3xl: 1600px;
