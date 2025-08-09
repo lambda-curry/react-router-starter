@@ -294,7 +294,8 @@ describe('todo-context', () => {
       ],
       filter: 'all' as const
     };
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+    // Use storage helper (mocked in this suite) to seed persisted state
+    saveToStorage(STORAGE_KEY, seeded);
 
     renderWithProvider();
 
