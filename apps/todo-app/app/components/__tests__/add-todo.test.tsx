@@ -13,6 +13,9 @@ function renderWithRouter(ui: React.ReactElement) {
 // hoist regex literals to top-level to satisfy biome's useTopLevelRegex
 const ADD_REGEX = /add/i;
 
+// hoist regex literals to top-level to satisfy biome's useTopLevelRegex
+const ADD_REGEX = /add/i;
+
 describe('AddTodo', () => {
   it('renders input and button', () => {
     const mockOnAdd = vi.fn();
