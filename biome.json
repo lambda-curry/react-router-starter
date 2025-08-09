@@ -25,17 +25,7 @@
       "trailingCommas": "none",
       "arrowParentheses": "asNeeded"
     },
-    "globals": [
-      "vi",
-      "describe",
-      "it",
-      "expect",
-      "beforeEach",
-      "afterEach",
-      "beforeAll",
-      "afterAll",
-      "test"
-    ]
+    "globals": ["vi", "describe", "it", "expect", "beforeEach", "afterEach", "beforeAll", "afterAll", "test"]
   },
   "linter": {
     "enabled": true,
@@ -78,4 +68,3 @@
     }
   }
 }
-

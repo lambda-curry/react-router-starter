@@ -6,10 +6,6 @@ inputs:
     description: 'Bun version to use'
     required: false
     default: '1.2.19'
-  cache-key:
-    description: 'Cache key for dependencies'
-    required: false
-    default: ''
 
 runs:
   using: 'composite'
@@ -21,14 +17,12 @@ runs:
 
     - name: Cache dependencies
       uses: actions/cache@v4
-      if: inputs.cache-key != ''
       with:
         path: ~/.bun
-        key: ${{ inputs.cache-key }}
+        key: ${{ runner.os }}-deps-${{ hashFiles('**/bun.lock') }}
         restore-keys: |
           ${{ runner.os }}-deps-
 
     - name: Install dependencies
       shell: bash
       run: bun install --frozen-lockfile
-

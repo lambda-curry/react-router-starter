@@ -36,7 +36,7 @@ export function TodoFilters({
           </Button>
         ))}
       </div>
-      
+
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
         <span>{activeCount} active</span>
         {completedCount > 0 && (
@@ -53,4 +53,3 @@ export function TodoFilters({
     </div>
   );
 }
-
