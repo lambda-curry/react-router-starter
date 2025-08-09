@@ -4,5 +4,6 @@ import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()]
+  // Plugin order can matter; React Router first, then path resolutions, then Tailwind
+  plugins: [reactRouter(), tsconfigPaths(), tailwindcss()]
 });
