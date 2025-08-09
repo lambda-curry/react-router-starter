@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { TodoProvider, useTodoStore, getFilteredTodos } from '../todo-context';
 import type { Todo } from '@todo-starter/utils';
 
@@ -62,6 +62,8 @@ describe('todo-context', () => {
   const ORIGINAL_ENV = process.env.NODE_ENV;
 
   beforeEach(() => {
+    // Opt-in to using real localStorage inside tests for this suite
+    Object.defineProperty(globalThis, '__ALLOW_STORAGE_IN_TESTS__', { value: true, configurable: true });
     // allow storage helpers to operate by switching env off 'test' for these tests
     process.env.NODE_ENV = 'development';
     try {
@@ -74,6 +76,8 @@ describe('todo-context', () => {
   afterEach(() => {
     // restore jsdom localStorage cleanliness and env
     process.env.NODE_ENV = ORIGINAL_ENV;
+    // Remove opt-in flag after each test to avoid cross-suite leakage
+    Object.defineProperty(globalThis, '__ALLOW_STORAGE_IN_TESTS__', { value: undefined, configurable: true });
     try {
       window.localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -237,8 +241,9 @@ describe('todo-context', () => {
     expect(screen.getByTestId('todos-count')).toHaveTextContent('1');
   });
 
-  it('persists on addTodo, toggleTodo, setFilter', () => {
-    const spy = vi.spyOn(window.localStorage, 'setItem');
+  it('persists on addTodo, toggleTodo, setFilter', async () => {
+    const utils = await import('@todo-starter/utils');
+    const spy = vi.spyOn(utils, 'saveToStorage');
 
     renderWithProvider();
 
@@ -252,8 +257,8 @@ describe('todo-context', () => {
       screen.getByTestId('set-filter').click();
     });
 
-    // Called multiple times through effect
-    expect(spy).toHaveBeenCalled();
+    // Called via utils wrapper (effects may be scheduled)
+    await waitFor(() => expect(spy).toHaveBeenCalled());
 
     spy.mockRestore();
   });

@@ -3,8 +3,13 @@
 export type StorageLike = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
 function getStorage(): StorageLike | null {
-  // Disable in test environments to keep tests deterministic
-  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'test') return null;
+  // Allow tests to opt-in to real storage by setting a runtime flag
+  const allowInTests =
+    typeof globalThis !== 'undefined' &&
+    // Use `unknown` and index signature to avoid `any`
+    (globalThis as unknown as Record<string, unknown>).__ALLOW_STORAGE_IN_TESTS__ === true;
+  // Disable in test environments unless explicitly allowed
+  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'test' && !allowInTests) return null;
   if (typeof window === 'undefined') return null;
   try {
     return window.localStorage;
