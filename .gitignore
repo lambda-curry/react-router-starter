@@ -117,3 +117,6 @@ Thumbs.db
 
 # Biome
 .biome-cache
+
+# React Router
+.react-router
