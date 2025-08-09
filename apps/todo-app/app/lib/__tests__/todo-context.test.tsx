@@ -1,8 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { TodoProvider, useTodoStore, getFilteredTodos } from '../todo-context';
 import type { Todo } from '@todo-starter/utils';
-import * as Utils from '@todo-starter/utils';
 
 // Mock crypto.randomUUID for consistent testing
 Object.defineProperty(global, 'crypto', {
@@ -22,23 +21,15 @@ function TestComponent() {
       <button type="button" onClick={() => addTodo('New todo')} data-testid="add-todo">
         Add Todo
       </button>
-      <button 
-        type="button"
-        onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} 
-        data-testid="toggle-todo"
-      >
+      <button type="button" onClick={() => todos.length > 0 && toggleTodo(todos[0].id)} data-testid="toggle-todo">
         Toggle First Todo
       </button>
-      <button 
-        type="button"
-        onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} 
-        data-testid="delete-todo"
-      >
+      <button type="button" onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} data-testid="delete-todo">
         Delete First Todo
       </button>
-      <button 
+      <button
         type="button"
-        onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} 
+        onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')}
         data-testid="update-todo"
       >
         Update First Todo
@@ -73,13 +64,21 @@ describe('todo-context', () => {
   beforeEach(() => {
     // allow storage helpers to operate by switching env off 'test' for these tests
     process.env.NODE_ENV = 'development';
-    try { window.localStorage.removeItem(STORAGE_KEY); } catch {}
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
   });
 
   afterEach(() => {
     // restore jsdom localStorage cleanliness and env
     process.env.NODE_ENV = ORIGINAL_ENV;
-    try { window.localStorage.removeItem(STORAGE_KEY); } catch {}
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
   });
 
   describe('TodoProvider and useTodoStore', () => {
@@ -172,7 +171,7 @@ describe('todo-context', () => {
       // Suppress console.error for this test
       const originalError = console.error;
       console.error = () => undefined;
-      
+
       expect(() => {
         render(<TestComponent />);
       }).toThrow('useTodoStore must be used within a TodoProvider');
@@ -220,7 +219,13 @@ describe('todo-context', () => {
   it('hydrates and revives date instances on mount when persisted state exists', () => {
     const seeded = {
       todos: [
-        { id: 'x', text: 'seed', completed: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+        {
+          id: 'x',
+          text: 'seed',
+          completed: false,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
       ],
       filter: 'all' as const
     };
@@ -233,13 +238,19 @@ describe('todo-context', () => {
   });
 
   it('persists on addTodo, toggleTodo, setFilter', () => {
-    const spy = vi.spyOn(Utils, 'saveToStorage');
+    const spy = vi.spyOn(window.localStorage, 'setItem');
 
     renderWithProvider();
 
-    act(() => { screen.getByTestId('add-todo').click(); });
-    act(() => { screen.getByTestId('toggle-todo').click(); });
-    act(() => { screen.getByTestId('set-filter').click(); });
+    act(() => {
+      screen.getByTestId('add-todo').click();
+    });
+    act(() => {
+      screen.getByTestId('toggle-todo').click();
+    });
+    act(() => {
+      screen.getByTestId('set-filter').click();
+    });
 
     // Called multiple times through effect
     expect(spy).toHaveBeenCalled();
@@ -252,7 +263,9 @@ describe('todo-context', () => {
     const original = window.localStorage;
     // @ts-ignore - override for test
     Object.defineProperty(window, 'localStorage', {
-      get() { throw new Error('unavailable'); },
+      get() {
+        throw new Error('unavailable');
+      },
       configurable: true
     });
 
