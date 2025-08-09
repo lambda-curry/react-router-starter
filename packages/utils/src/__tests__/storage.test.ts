@@ -8,15 +8,12 @@ const ORIGINAL_ENV = process.env.NODE_ENV;
 
 describe('storage utils', () => {
   function ensureWindowWithLocalStorage() {
-    // Ensure a Window-like global for Node environment
     if (typeof window === 'undefined') {
       Object.defineProperty(globalThis, 'window', {
-        // unknown avoids explicit any; cast to Window shape for tests
         value: {} as unknown as Window & typeof globalThis,
         configurable: true
       });
     }
-    // Polyfill localStorage if missing
     if (!('localStorage' in window)) {
       const store = new Map<string, string>();
       Object.defineProperty(window, 'localStorage', {
@@ -35,7 +32,7 @@ describe('storage utils', () => {
   }
 
   beforeEach(() => {
-    // Ensure clean slate
+    ensureWindowWithLocalStorage();
     try {
       window.localStorage.removeItem(KEY);
     } catch {
@@ -53,14 +50,12 @@ describe('storage utils', () => {
   });
 
   it('SSR/test guard disables storage (returns fallback in test env)', () => {
-    // In vitest, NODE_ENV is "test" by default. Verify guard path returns fallback.
     window.localStorage.setItem(KEY, JSON.stringify({ value: 123 }));
     const result = loadFromStorage(KEY, { value: 999 });
     expect(result).toEqual({ value: 999 });
   });
 
   it('Malformed JSON returns fallback', () => {
-    // Enable storage access by switching to a non-test env for this test
     process.env.NODE_ENV = 'development';
     ensureWindowWithLocalStorage();
     window.localStorage.setItem(KEY, '{not json');

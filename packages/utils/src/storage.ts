@@ -18,16 +18,14 @@ function getStorage(): StorageLike | null {
   }
 }
 
-export function loadFromStorage<T>(key: string, fallback: T): T;
-export function loadFromStorage<T>(key: string, fallback: T, validate: (value: unknown) => value is T | boolean): T;
-export function loadFromStorage<T>(key: string, fallback: T, validate?: (value: unknown) => value is T | boolean): T {
+export function loadFromStorage<T>(key: string, fallback: T, validate?: (value: unknown) => value is T): T {
   const storage = getStorage();
   if (!storage) return fallback;
   try {
     const raw = storage.getItem(key);
     if (!raw) return fallback;
     const parsed = JSON.parse(raw) as unknown;
-    if (validate && !validate(parsed)) return fallback; // Add optional validation guard
+    if (validate && !validate(parsed)) return fallback;
     return parsed as T;
   } catch {
     return fallback;
