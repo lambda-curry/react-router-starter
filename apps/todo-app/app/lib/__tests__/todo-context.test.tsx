@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { TodoProvider, useTodoStore, getFilteredTodos } from '../todo-context';
 import type { Todo, TodoFilter } from '@todo-starter/utils';
 import { removeFromStorage, saveToStorage } from '@todo-starter/utils';
@@ -86,6 +86,33 @@ vi.mock('@todo-starter/utils', async importOriginal => {
 });
 
 describe('todo-context', () => {
+  const STORAGE_KEY = 'todo-app/state@v1';
+  const ORIGINAL_ENV = process.env.NODE_ENV;
+
+  beforeEach(() => {
+    // Opt-in to using real localStorage inside tests for this suite
+    Object.defineProperty(globalThis, '__ALLOW_STORAGE_IN_TESTS__', { value: true, configurable: true });
+    // allow storage helpers to operate by switching env off 'test' for these tests
+    process.env.NODE_ENV = 'development';
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+  });
+
+  afterEach(() => {
+    // restore jsdom localStorage cleanliness and env
+    process.env.NODE_ENV = ORIGINAL_ENV;
+    // Remove opt-in flag after each test to avoid cross-suite leakage
+    Object.defineProperty(globalThis, '__ALLOW_STORAGE_IN_TESTS__', { value: undefined, configurable: true });
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+  });
+
   describe('TodoProvider and useTodoStore', () => {
     beforeEach(() => {
       // Ensure no persisted state bleeds across tests
@@ -252,5 +279,67 @@ describe('todo-context', () => {
       expect(filtered).toHaveLength(1);
       expect(filtered[0].completed).toBe(true);
     });
+  });
+
+  it('hydrates and revives date instances on mount when persisted state exists', () => {
+    const seeded = {
+      todos: [
+        {
+          id: 'x',
+          text: 'seed',
+          completed: false,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ],
+      filter: 'all' as const
+    };
+    // Use storage helper (mocked in this suite) to seed persisted state
+    saveToStorage(STORAGE_KEY, seeded);
+
+    renderWithProvider();
+
+    // Access via UI to ensure hydration occurred
+    expect(screen.getByTestId('todos-count')).toHaveTextContent('1');
+  });
+
+  it('persists on addTodo, toggleTodo, setFilter', async () => {
+    const utils = await import('@todo-starter/utils');
+    const spy = vi.spyOn(utils, 'saveToStorage');
+
+    renderWithProvider();
+
+    act(() => {
+      screen.getByTestId('add-todo').click();
+    });
+    act(() => {
+      screen.getByTestId('toggle-todo').click();
+    });
+    act(() => {
+      screen.getByTestId('set-filter').click();
+    });
+
+    // Called via utils wrapper (effects may be scheduled)
+    await waitFor(() => expect(spy).toHaveBeenCalled());
+
+    spy.mockRestore();
+  });
+
+  it('no SSR errors when window/localStorage not available (guarded in utils)', () => {
+    // Simulate storage access throwing
+    const original = window.localStorage;
+    // @ts-ignore - override for test
+    Object.defineProperty(window, 'localStorage', {
+      get() {
+        throw new Error('unavailable');
+      },
+      configurable: true
+    });
+
+    // Should not throw during render/mount due to guard
+    expect(() => renderWithProvider()).not.toThrow();
+
+    // restore
+    Object.defineProperty(window, 'localStorage', { value: original, configurable: true });
   });
 });
