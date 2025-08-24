@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -7,10 +7,22 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
-    "ignore": [".turbo", "yarn.lock", "node_modules", "**/.react-router/**", "build", "dist"]
+    "includes": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.jsx",
+      "!.turbo",
+      "!yarn.lock",
+      "!node_modules",
+      "!**/.react-router",
+      "!build",
+      "!dist"
+    ]
   },
-  "organizeImports": { "enabled": false },
+  "assist": {
+    "enabled": true
+  },
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
@@ -30,9 +42,8 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "all": true,
+      "recommended": true,
       "style": {
-        "all": true,
         "useBlockStatements": "off",
         "useNamingConvention": "off",
         "noImplicitBoolean": "off",
@@ -43,27 +54,27 @@
         "useExplicitLengthCheck": "off"
       },
       "complexity": {
-        "all": true,
         "noForEach": "off",
         "useLiteralKeys": "off",
         "noExcessiveCognitiveComplexity": "off"
       },
       "performance": {
-        "all": true,
         "noAccumulatingSpread": "off",
         "noBarrelFile": "off"
       },
       "suspicious": {
         "noConsole": "off",
-        "noConsoleLog": "off",
-        "noReactSpecificProps": "off",
-        "noExplicitAny": "error"
+        "noExplicitAny": "error",
+        "useBiomeIgnoreFolder": "off"
       },
       "correctness": {
-        "all": true,
         "noNodejsModules": "off",
         "noUndeclaredDependencies": "off",
         "useImportExtensions": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "noLabelWithoutControl": "off"
       }
     }
   }

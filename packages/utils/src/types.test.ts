@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { Todo, TodoFilter, TodoStore } from './types';
 
 describe('Todo types', () => {
@@ -31,12 +31,24 @@ describe('Todo types', () => {
     const mockStore: TodoStore = {
       todos: [],
       filter: 'all',
-      addTodo: (_text: string) => { return; },
-      toggleTodo: (_id: string) => { return; },
-      deleteTodo: (_id: string) => { return; },
-      updateTodo: (_id: string, _text: string) => { return; },
-      setFilter: (_filter: TodoFilter) => { return; },
-      clearCompleted: () => { return; }
+      addTodo: (_text: string) => {
+        return;
+      },
+      toggleTodo: (_id: string) => {
+        return;
+      },
+      deleteTodo: (_id: string) => {
+        return;
+      },
+      updateTodo: (_id: string, _text: string) => {
+        return;
+      },
+      setFilter: (_filter: TodoFilter) => {
+        return;
+      },
+      clearCompleted: () => {
+        return;
+      }
     };
 
     expect(mockStore.todos).toEqual([]);
