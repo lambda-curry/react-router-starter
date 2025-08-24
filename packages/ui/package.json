@@ -20,7 +20,7 @@
     "test:ci": "vitest run --config ./vitest.config.ts"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "2.2.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.5",
     "typescript": "^5.8.3",

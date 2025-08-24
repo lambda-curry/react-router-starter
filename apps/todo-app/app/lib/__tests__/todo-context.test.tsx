@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
-import { TodoProvider, useTodoStore, getFilteredTodos } from '../todo-context';
+import { act, render, screen } from '@testing-library/react';
 import type { Todo } from '@todo-starter/utils';
+import { describe, expect, it } from 'vitest';
+import { getFilteredTodos, TodoProvider, useTodoStore } from '../todo-context';
 
 // Mock crypto.randomUUID for consistent testing
 Object.defineProperty(global, 'crypto', {
@@ -27,7 +27,11 @@ function TestComponent() {
       <button type="button" onClick={() => todos.length > 0 && deleteTodo(todos[0].id)} data-testid="delete-todo">
         Delete First Todo
       </button>
-      <button type="button" onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')} data-testid="update-todo">
+      <button
+        type="button"
+        onClick={() => todos.length > 0 && updateTodo(todos[0].id, 'Updated text')}
+        data-testid="update-todo"
+      >
         Update First Todo
       </button>
       <button type="button" onClick={() => setFilter('active')} data-testid="set-filter">
@@ -144,7 +148,9 @@ describe('todo-context', () => {
       // Suppress console.error for this test
       const originalError = console.error;
       // Provide a no-op replacement with a body to satisfy linter
-      console.error = (..._args: unknown[]) => { /* intentionally empty */ };
+      console.error = (..._args: unknown[]) => {
+        /* intentionally empty */
+      };
 
       expect(() => {
         render(<TestComponent />);

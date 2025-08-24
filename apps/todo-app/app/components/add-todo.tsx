@@ -1,9 +1,9 @@
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
-import { Plus } from 'lucide-react';
-import { TextField, FormError } from '@lambdacurry/forms';
+import { FormError, TextField } from '@lambdacurry/forms';
 import { Button } from '@lambdacurry/forms/ui';
+import { Plus } from 'lucide-react';
+import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
+import { z } from 'zod';
 
 const addTodoSchema = z.object({
   text: z.string().min(1, 'Todo text is required').trim()

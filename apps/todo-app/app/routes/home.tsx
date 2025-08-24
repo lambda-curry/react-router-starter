@@ -1,12 +1,12 @@
+import { Button } from '@lambdacurry/forms/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo-starter/ui';
+import { Settings } from 'lucide-react';
 import type { MetaFunction } from 'react-router';
 import { Link } from 'react-router';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo-starter/ui';
-import { Button } from '@lambdacurry/forms/ui';
 import { AddTodo } from '~/components/add-todo';
-import { TodoItem } from '~/components/todo-item';
 import { TodoFilters } from '~/components/todo-filters';
-import { useTodoStore, getFilteredTodos } from '~/lib/todo-context';
-import { Settings } from 'lucide-react';
+import { TodoItem } from '~/components/todo-item';
+import { getFilteredTodos, useTodoStore } from '~/lib/todo-context';
 
 export const meta: MetaFunction = () => {
   return [
