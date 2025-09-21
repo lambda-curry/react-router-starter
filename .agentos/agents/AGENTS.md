@@ -12,12 +12,16 @@
   - templates/prompts/review.md
 - Medusa Integrator
   - templates/prompts/medusa-plugin.md
+- Researcher (Research Agent)
+  - templates/prompts/research.md
+
 
 Scripts
 - .agentos/scripts/preflight.sh
 - .agentos/scripts/postflight.sh
 - .agentos/scripts/create-spec.sh
+- .agentos/scripts/research.sh (dry-run stub)
+
 - .agentos/scripts/generate-tasks.sh
 - .agentos/scripts/implement-tasks.sh
 - .agentos/scripts/medusa-checks.sh (noop here)
-
