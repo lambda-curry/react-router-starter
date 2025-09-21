@@ -1,0 +1,38 @@
+name: Lambda AgentOS Gates
+
+on:
+  pull_request:
+    paths:
+      - '.agentos/**'
+      - '.github/workflows/lambda-agentos.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Bun and install dependencies
+        uses: ./.github/composite/bun-install
+      - name: Run pre-flight
+        shell: bash
+        run: .agentos/scripts/preflight.sh
+
+  postflight:
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Bun and install dependencies
+        uses: ./.github/composite/bun-install
+      - name: Run post-flight
+        shell: bash
+        run: .agentos/scripts/postflight.sh
+
