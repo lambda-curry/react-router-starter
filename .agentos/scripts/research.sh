@@ -23,7 +23,7 @@ Research Plan
 - Confirm RR7 action semantics for FormData arrays
 - Check server contract for /todos
 - Verify client request encoding (fetcher/form submit)
-- Identify authoritative docs (Context7-first if available)
+- Identify authoritative docs using available tools (Context7, Exa/Perplexity, or browser/search MCP)
 
 Sources (with links and versions)
 - [1] TODO: https://reactrouter.com/ (v7) — action/form semantics
@@ -46,5 +46,4 @@ Risks & Open Questions
 - [NEEDS CLARIFICATION: Is server expecting JSON or FormData?]
 EOF
 
-info "NOTE: This is a stub. Integrate with your agent runtime to actually call Context7 or browser MCP tools."
-
+info "NOTE: This is a stub. Integrate with your agent runtime to call Context7, Exa/Perplexity, or browser/search MCP tools when available."

@@ -8,12 +8,16 @@ Invocation (human-in-the-loop)
 - Provide a short task description and any relevant spec path under .agentos/specs/*
 - Depth defaults to pragmatic (2–3 primary sources). Ask for deeper dive if needed.
 
-Context7 MCP Path (preferred)
+Tooling Options (choose what’s available)
 - Step 1: resolve-library-id <library-name>
 - Step 2: get-library-docs <resolved-id> --topic <focus> --tokens 4000
 - Always call resolve-library-id before get-library-docs unless you have an exact Context7 ID.
 
-Browser/Search MCP Path (fallback)
+- General web search: Perplexity or Exa (exa_web_search + exa_web_view_page) to find authoritative docs/RFCs/READMEs
+- Browser/search MCP: chrome_get_web_content (snapshots), chrome_network_request (API docs), search_tabs_content (pivot within existing tabs)
+- No tools available: rely on local repository context and framework knowledge; cite local files and well-known framework behavior
+
+Browser/Search MCP Path (optional)
 - Use chrome_get_web_content for page snapshots
 - Use chrome_network_request for API docs
 - Use search_tabs_content to pivot within already-open tabs
@@ -32,4 +36,3 @@ Notes
 - Prefer RR7 primitives, Tailwind, workspace conventions in examples.
 - Mark gaps with [NEEDS CLARIFICATION: …].
 - Keep outputs skimmable for PRs/issues.
-
