@@ -1,9 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { renderWithRouter } from '../../../test/test-utils';
 import { AddTodo } from '../../components/add-todo';
 import { TodoItem } from '../../components/todo-item';
 import { getFilteredTodos, TodoProvider, useTodoStore } from '../../lib/todo-context';
-import { renderWithRouter } from '../../../test/test-utils';
 
 /**
  * Integration test: full flow combining TodoProvider, AddTodo, and filtered list.
@@ -19,13 +19,7 @@ function TodoFlow() {
         Active
       </button>
       {filtered.map(todo => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          onToggle={toggleTodo}
-          onDelete={deleteTodo}
-          onUpdate={updateTodo}
-        />
+        <TodoItem key={todo.id} todo={todo} onToggle={toggleTodo} onDelete={deleteTodo} onUpdate={updateTodo} />
       ))}
     </div>
   );

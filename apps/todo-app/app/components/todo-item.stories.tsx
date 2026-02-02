@@ -1,6 +1,6 @@
-import type { Todo } from '@todo-starter/utils';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
+import type { Todo } from '@todo-starter/utils';
 import { TodoItem } from './todo-item';
 
 const sampleTodo: Todo = {

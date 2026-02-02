@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@todo
 import type { ActionFunctionArgs, MetaFunction } from 'react-router';
 import { useFetcher } from 'react-router';
 import { getValidatedFormData } from 'remix-hook-form';
-import { ContactForm, contactFormSchema, type ContactFormData } from '~/components/contact-form';
+import { ContactForm, type ContactFormData, contactFormSchema } from '~/components/contact-form';
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,10 +13,7 @@ export const meta: MetaFunction = () => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { data, errors } = await getValidatedFormData<ContactFormData>(
-    request,
-    zodResolver(contactFormSchema)
-  );
+  const { data, errors } = await getValidatedFormData<ContactFormData>(request, zodResolver(contactFormSchema));
 
   if (errors) return { errors };
 

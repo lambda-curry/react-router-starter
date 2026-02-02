@@ -1,4 +1,4 @@
-import { render, type RenderOptions } from '@testing-library/react';
+import { type RenderOptions, render } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { createMemoryRouter, type RouteObject, RouterProvider } from 'react-router-dom';
 
@@ -22,13 +22,12 @@ export interface RenderWithRouterOptions extends Omit<RenderOptions, 'wrapper'> 
 export function renderWithRouter(ui: ReactElement, options: RenderWithRouterOptions = {}) {
   const { initialEntries = ['/'], routes, ...renderOptions } = options;
 
-  const routeConfig: RouteObject[] =
-    routes ?? [
-      {
-        path: '/',
-        element: ui
-      }
-    ];
+  const routeConfig: RouteObject[] = routes ?? [
+    {
+      path: '/',
+      element: ui
+    }
+  ];
 
   const router = createMemoryRouter(routeConfig, { initialEntries });
   return render(<RouterProvider router={router} />, renderOptions);

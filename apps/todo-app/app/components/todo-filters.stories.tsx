@@ -1,6 +1,6 @@
-import type { TodoFilter } from '@todo-starter/utils';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
+import type { TodoFilter } from '@todo-starter/utils';
 import { TodoFilters } from './todo-filters';
 
 const meta: Meta<typeof TodoFilters> = {
