@@ -1,0 +1,121 @@
+name: starter-improvements
+description: >
+  Update react-router-starter to be a comprehensive prototype starting point
+  with best practices from reportory, Storybook, forms library, and testing examples.
+
+context:
+  goal: |
+    Create a best-practices starter template that can be quickly duplicated
+    for prototype apps. Should demonstrate patterns for react-router, forms,
+    testing, and Storybook that we use across Lambda Curry projects.
+  
+  references:
+    - ~/projects/reportory/.cursorrules/react-router.md
+    - ~/projects/reportory/.cursorrules/storybook.md  
+    - ~/projects/reportory/.cursorrules/lambda-curry-forms.md
+    - ~/projects/reportory/.cursorrules/testing-best-practices.md
+
+beads:
+  - id: update-deps
+    name: Update Dependencies
+    description: |
+      Update all dependencies to latest stable versions.
+      - Run bun update
+      - Check for any breaking changes
+      - Ensure everything builds and types check
+    priority: 1
+    agent: 1
+
+  - id: setup-storybook
+    name: Setup Storybook with React Router
+    description: |
+      Add Storybook with proper React Router mocking.
+      Reference: ~/projects/reportory/.cursorrules/storybook.md
+      
+      Tasks:
+      - Install Storybook for Vite/React
+      - Configure mock react-router decorators
+      - Create example stories for existing components
+      - Add Storybook scripts to package.json
+    priority: 2
+    agent: 2
+    depends_on: [update-deps]
+
+  - id: forms-examples
+    name: Lambda Curry Forms Integration
+    description: |
+      Add form examples using @lambdacurry/forms best practices.
+      Reference: ~/projects/reportory/.cursorrules/lambda-curry-forms.md
+      
+      Tasks:
+      - Create example form components
+      - Show validation patterns with zod
+      - Demonstrate action handlers
+      - Add Storybook stories for forms
+    priority: 2
+    agent: 3
+    depends_on: [update-deps]
+
+  - id: testing-examples
+    name: Testing Examples
+    description: |
+      Add comprehensive testing examples.
+      Reference: ~/projects/reportory/.cursorrules/testing-best-practices.md
+      
+      Tasks:
+      - Unit test examples for utilities
+      - Component test examples with react-router mocking
+      - Integration test patterns
+      - Ensure vitest config is optimal
+    priority: 2
+    agent: 4
+    depends_on: [update-deps]
+
+  - id: ai-rules
+    name: Setup AI Rules
+    description: |
+      Copy and adapt relevant ai-rules from reportory.
+      
+      Tasks:
+      - Copy react-router.md
+      - Copy storybook.md (if added)
+      - Copy lambda-curry-forms.md
+      - Copy testing-best-practices.md
+      - Create project-specific 00-project-context.md
+      - Update .cursorrules structure
+    priority: 3
+    agent: 5
+    depends_on: [setup-storybook, forms-examples, testing-examples]
+
+  - id: biome-check
+    name: Biome Config Review
+    description: |
+      Review and update Biome configuration.
+      
+      Tasks:
+      - Check biome version (currently 2.2.0)
+      - Review rules for best practices
+      - Ensure lint/format scripts work
+      - Run full lint pass and fix issues
+    priority: 3
+    agent: 1
+    depends_on: [ai-rules]
+
+  - id: docs-update
+    name: Update Documentation
+    description: |
+      Update README and documentation.
+      
+      Tasks:
+      - Update README with new features
+      - Add usage examples
+      - Document Storybook commands
+      - Document testing patterns
+    priority: 4
+    agent: 2
+    depends_on: [biome-check]
+
+settings:
+  maxAgents: 5
+  model: claude-sonnet-4-20250514
+  autoMerge: false

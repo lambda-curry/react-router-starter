@@ -1,0 +1,8 @@
+{
+  "name": "react-router-starter",
+  "plugins": ["ralph"],
+  "defaults": {
+    "maxAgents": 5,
+    "model": "claude-sonnet-4-20250514"
+  }
+}
