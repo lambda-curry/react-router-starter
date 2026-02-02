@@ -6,6 +6,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./test/setup.ts']
+    setupFiles: ['./test/setup.ts'],
+    include: ['app/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules', 'build', '**/*.stories.*', '.storybook'],
+    env: { NODE_ENV: 'test' },
+    // Optional: install @vitest/coverage-v8 and run vitest run --coverage
+    testTimeout: 10_000
   }
 });

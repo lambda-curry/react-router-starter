@@ -1,12 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { renderWithRouter } from '../../../test/test-utils';
 import { ContactForm } from '../contact-form';
-
-function renderWithRouter(ui: React.ReactElement) {
-  const router = createMemoryRouter([{ path: '/', element: ui }], { initialEntries: ['/'] });
-  return render(<RouterProvider router={router} />);
-}
 
 describe('ContactForm', () => {
   it('renders name, email, message fields and submit button', () => {
