@@ -10,9 +10,12 @@ A modern, full-featured todo application built with React Router 7, showcasing b
 - **shadcn/ui Components** - Beautiful, accessible UI components
 - **TypeScript** - Full type safety throughout
 - **React Context + useReducer** - Built-in state management
-- **Vitest** - Fast unit testing
+- **Lambda Curry Forms** - Type-safe forms with Zod and React Hook Form ([FORMS_INTEGRATION.md](./FORMS_INTEGRATION.md))
+- **Storybook** - Component development and documentation (port 6006)
+- **Vitest** - Fast unit, component, and integration testing
 - **Bun** - Fast package manager and runtime
-- **Biome** - Fast linting and formatting
+- **Biome** - Linting and formatting
+- **AI / Agent rules** - Beads issue tracking and Cursor rules ([AGENTS.md](./AGENTS.md))
 
 ## 📁 Project Structure
 
@@ -55,22 +58,58 @@ bun dev
 
 4. Open [http://localhost:5173](http://localhost:5173) in your browser
 
+## 📋 Usage Examples
+
+From the **repo root** (uses Turbo):
+
+```bash
+bun dev                    # Start all dev servers
+bun build                  # Build all packages and apps
+bun test                   # Run all tests (watch from workspace)
+bun run test:ci            # Run tests once (CI)
+bun lint                   # Lint all packages
+bun typecheck              # Type check all packages
+```
+
+From **apps/todo-app** (or `bun run --filter todo-app ...` from root):
+
+```bash
+cd apps/todo-app
+bun dev                    # Start dev server (http://localhost:5173)
+bun run storybook          # Start Storybook (http://localhost:6006)
+bun run build-storybook    # Build static Storybook
+bun test                   # Vitest watch mode
+bun run test:run           # Vitest single run
+bun run test:ui            # Vitest UI
+```
+
+Quick flows:
+
+- **Add a todo:** Open app → type in the input → submit (or use the "Advanced Todo Form" route for the full form example).
+- **Run tests:** From root `bun test`, or from `apps/todo-app`: `bun run test:run`.
+- **Browse components:** From `apps/todo-app` run `bun run storybook` and open http://localhost:6006.
+
 ## 📦 Available Scripts
 
-### Root Level
+### Root level
 - `bun dev` - Start all development servers
 - `bun build` - Build all packages and apps
-- `bun test` - Run all tests
+- `bun test` - Run all tests (Turbo)
+- `bun run test:ci` - Run tests once (CI)
 - `bun lint` - Lint all packages
 - `bun format` - Format all code
 - `bun typecheck` - Type check all packages
 
-### App Level (apps/todo-app)
+### App level (apps/todo-app)
 - `bun dev` - Start development server
 - `bun build` - Build for production
 - `bun start` - Start production server
-- `bun test` - Run tests
-- `bun test:ui` - Run tests with UI
+- `bun test` - Run tests (Vitest watch)
+- `bun run test:run` - Run tests once
+- `bun run test:ci` - Run tests once (CI)
+- `bun run test:ui` - Run tests with Vitest UI
+- `bun run storybook` - Start Storybook (port 6006)
+- `bun run build-storybook` - Build static Storybook
 
 ## 🏗️ Architecture
 
@@ -107,24 +146,37 @@ This project uses **Tailwind CSS v4** with CSS-first configuration for modern, e
 - **Dark mode support**: Uses `@custom-variant` and `@variant` directives for theme switching
 - **shadcn/ui compatible**: Maintains full compatibility with shadcn/ui components
 
+## 📖 Storybook
+
+Component stories live in **apps/todo-app/app/components/** as `*.stories.tsx` (e.g. `add-todo.stories.tsx`, `todo-item.stories.tsx`, `todo-filters.stories.tsx`, `contact-form.stories.tsx`). Storybook is configured in `apps/todo-app/.storybook/`.
+
+| Command | Description |
+|--------|-------------|
+| `bun run storybook` | Start Storybook dev server (from apps/todo-app) — http://localhost:6006 |
+| `bun run build-storybook` | Build static Storybook output |
+
+Use `npm run storybook` / `npm run build-storybook` if you prefer npm in that app.
+
 ## 🧪 Testing
 
-The project includes comprehensive testing setup:
+The project uses **Vitest** and **React Testing Library** for unit, component, and integration tests. Full patterns and examples are in **[apps/todo-app/TESTING.md](./apps/todo-app/TESTING.md)**.
 
-- **Vitest** for unit testing
-- **@testing-library/react** for component testing
-- **jsdom** environment for DOM testing
-- Test files located alongside source files in `__tests__` directories
+**Patterns:**
 
-Run tests:
-```bash
-bun test
-```
+- **Unit** — Pure helpers in `app/lib/__tests__/*.test.ts`.
+- **Component** — UI components in `app/components/__tests__/*.test.tsx`; use **`renderWithRouter`** from `test/test-utils.tsx` when components use `Link`, `useNavigate`, or other router APIs.
+- **Integration** — Full route + provider flows in `app/routes/__tests__/*.integration.test.tsx`.
 
-Run tests with UI:
-```bash
-bun test:ui
-```
+**Scripts (from apps/todo-app):**
+
+| Script | Description |
+|--------|-------------|
+| `bun test` | Vitest watch mode |
+| `bun run test:run` | Single run (CI) |
+| `bun run test:ci` | Same as test:run |
+| `bun run test:ui` | Vitest UI |
+
+Shared setup: `test/setup.ts`. Shared helpers: `test/test-utils.tsx` (includes `renderWithRouter`).
 
 ## 🎨 Styling
 
@@ -176,6 +228,12 @@ The app supports:
 - Server-side rendering (SSR)
 - Static pre-rendering
 - Progressive enhancement
+
+## 📚 Documentation
+
+- **[FORMS_INTEGRATION.md](./FORMS_INTEGRATION.md)** — Lambda Curry Forms setup, patterns, and examples
+- **[apps/todo-app/TESTING.md](./apps/todo-app/TESTING.md)** — Testing guide (unit, component, integration, `renderWithRouter`)
+- **[AGENTS.md](./AGENTS.md)** — Beads issue tracking and session workflow for agents
 
 ## 📚 Learn More
 

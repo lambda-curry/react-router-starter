@@ -8,7 +8,10 @@ This app uses **Vitest** and **React Testing Library** for unit, component, and 
 npm run test        # watch mode
 npm run test:run    # single run (CI)
 npm run test:ci     # same as test:run
+npm run test:ui     # Vitest UI (interactive)
 ```
+
+Use `bun run test`, `bun run test:run`, etc. if using Bun.
 
 Optional coverage (requires `@vitest/coverage-v8`):
 
