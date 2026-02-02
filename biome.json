@@ -16,8 +16,8 @@
       "!yarn.lock",
       "!node_modules",
       "!**/.react-router",
-      "!build",
-      "!dist"
+      "!**/build/**",
+      "!**/dist/**"
     ]
   },
   "assist": {
