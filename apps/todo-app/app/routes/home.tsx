@@ -32,12 +32,15 @@ export default function Home() {
               Built with React Router 7, Tailwind CSS, shadcn/ui, and @lambdacurry/forms
             </p>
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-2 flex-wrap">
             <Button asChild variant="outline">
               <Link to="/create-todo">
                 <Settings className="h-4 w-4 mr-2" />
                 Advanced Todo Form
               </Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/contact">Contact form example</Link>
             </Button>
           </div>
         </div>
