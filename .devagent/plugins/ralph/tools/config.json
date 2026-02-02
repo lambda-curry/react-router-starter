@@ -18,13 +18,25 @@
     "working_branch": "feat/starter-improvements"
   },
   "roles": {
-    "engineering": "Code Wizard"
+    "engineering": "Code Wizard",
+    "qa": "Bug Hunter",
+    "design": "Pixel Perfector",
+    "project-manager": "Chaos Coordinator"
   },
   "role_briefs": {
-    "engineering": "Implement the task end-to-end, including tests and verification commands."
+    "engineering": "Implement the task end-to-end, including tests and verification commands.",
+    "qa": "Reproduce issues, add/adjust tests, and validate behavior changes.",
+    "design": "Improve UX/UI, polish copy, and ensure accessibility where relevant.",
+    "project-manager": "Clarify scope, break down work into Beads tasks, and coordinate sequencing."
   },
   "execution": {
     "require_confirmation": false,
     "max_iterations": 15
+  },
+  "agents": {
+    "engineering": "engineering-agent.json",
+    "qa": "qa-agent.json",
+    "design": "design-agent.json",
+    "project-manager": "project-manager-agent.json"
   }
 }
