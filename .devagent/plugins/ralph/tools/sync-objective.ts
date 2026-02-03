@@ -14,7 +14,7 @@
 
 import { readFileSync, existsSync } from "fs";
 import { resolve, isAbsolute } from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 // Types
 interface ParsedTask {
@@ -194,9 +194,8 @@ function parseDependencies(depsStr: string): string[] {
  * Execute Beads CLI command and return JSON result
  */
 function bdCommand(args: string[]): unknown {
-  const cmd = `bd ${args.join(' ')} --json`;
   try {
-    const output = execSync(cmd, { encoding: 'utf-8', stdio: 'pipe' });
+    const output = execFileSync("bd", [...args, "--json"], { encoding: "utf-8", stdio: "pipe" });
     const lines = output.trim().split('\n');
     // Find the last line that looks like JSON (Beads may output warnings)
     for (let i = lines.length - 1; i >= 0; i--) {
@@ -208,7 +207,8 @@ function bdCommand(args: string[]): unknown {
     throw new Error(`No JSON output found in: ${output}`);
   } catch (error) {
     if (error instanceof Error && 'stdout' in error) {
-      const output = (error as { stdout?: string }).stdout || '';
+      const rawOutput = (error as { stdout?: string | Buffer }).stdout;
+      const output = typeof rawOutput === 'string' ? rawOutput : rawOutput?.toString() || '';
       const lines = output.trim().split('\n');
       for (let i = lines.length - 1; i >= 0; i--) {
         const line = lines[i].trim();
@@ -225,7 +225,7 @@ function bdCommand(args: string[]): unknown {
  * Get existing Beads tasks for the objective epic
  */
 function getExistingTasks(objectiveEpicId: string): Map<string, BeadsTask> {
-  const result = bdCommand(['list', '--parent', objectiveEpicId, '--json']) as BeadsTask[];
+  const result = bdCommand(['list', '--parent', objectiveEpicId]) as BeadsTask[];
   const taskMap = new Map<string, BeadsTask>();
   
   for (const task of result) {
@@ -249,25 +249,25 @@ function createOrUpdateTask(
   existingTask?: BeadsTask
 ): string {
   const description = buildTaskDescription(task);
-  const title = task.title;
+  const title = `${task.id}: ${task.title}`;
   
   if (existingTask) {
     // Update existing task
     bdCommand([
       'update',
       existingTask.id,
-      '--title', `"${title}"`,
-      '--description', `"${description}"`,
+      '--title', title,
+      '--description', description,
     ]);
     return existingTask.id;
   } else {
     // Create new task
     const result = bdCommand([
       'create',
-      `"${title}"`,
+      title,
       '--type', 'task',
       '--parent', objectiveEpicId,
-      '--description', `"${description}"`,
+      '--description', description,
       '--priority', '2',
     ]) as { id: string } | BeadsTask[];
     

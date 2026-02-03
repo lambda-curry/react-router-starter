@@ -34,5 +34,5 @@ Your job is to deliver working code changes that satisfy acceptance criteria wit
 - Prefer small, composable functions and clear names.
 - Avoid unnecessary `useEffect` and state in UI code.
 - Use existing libraries/components already present in the repo.
-- Keep error handling framework-native (e.g., React Router v7 `throw data()` in loaders/actions).
+- Keep error handling framework-native.
 - Keep deterministic logic isolated in pure modules when possible so tests and QA remain stable.

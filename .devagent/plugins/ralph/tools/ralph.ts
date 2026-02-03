@@ -504,7 +504,8 @@ function getReadyTasks(epicId?: string): BeadsTask[] {
         return [];
       }
       const fallbackTasks = parseJsonWithContext<BeadsTask[]>(fallbackOutput, 'bd ready --json (fallback, unscoped)');
-      return Array.isArray(fallbackTasks) ? fallbackTasks : [];
+      const fallbackList = Array.isArray(fallbackTasks) ? fallbackTasks : [];
+      return fallbackList.filter(task => task.parent_id === epicId || task.id.startsWith(`${epicId}.`));
     }
 
     return readyTasks;

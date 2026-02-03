@@ -15,7 +15,7 @@
  *   await rebaseBranch('feature/objective-epic-a', 'origin/feature/objective-hub', { strategy: 'theirs' });
  */
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 // Types
 export interface GitManagerOptions {
@@ -51,21 +51,30 @@ export interface RebaseResult {
 /**
  * Execute a git command and return output
  */
-function execGit(command: string, options: GitManagerOptions = {}): string {
+function execGit(args: string[], options: GitManagerOptions = {}): string {
   const cwd = options.cwd || process.cwd();
+  const command = ['git', ...args]
+    .map(arg => (/\s/.test(arg) ? JSON.stringify(arg) : arg))
+    .join(' ');
   try {
-    return execSync(command, {
+    return execFileSync('git', args, {
       cwd,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe']
     }).trim();
   } catch (error: unknown) {
-    const err = error as { stderr?: string; stdout?: string; message?: string };
+    const err = error as {
+      stderr?: string | Buffer;
+      stdout?: string | Buffer;
+      message?: string;
+    };
+    const stderr = err.stderr ? (typeof err.stderr === 'string' ? err.stderr : err.stderr.toString()) : '';
+    const stdout = err.stdout ? (typeof err.stdout === 'string' ? err.stdout : err.stdout.toString()) : '';
     throw new Error(
       `Git command failed: ${command}\n` +
         `Error: ${err.message || 'Unknown error'}\n` +
-        `Stderr: ${err.stderr || ''}\n` +
-        `Stdout: ${err.stdout || ''}`
+        `Stderr: ${stderr}\n` +
+        `Stdout: ${stdout}`
     );
   }
 }
@@ -76,13 +85,13 @@ function execGit(command: string, options: GitManagerOptions = {}): string {
 function branchExists(branchName: string, options: GitManagerOptions = {}): boolean {
   try {
     // Check local branches
-    const localBranches = execGit('git branch --format="%(refname:short)"', options);
+    const localBranches = execGit(['branch', '--format=%(refname:short)'], options);
     if (localBranches.split('\n').includes(branchName)) {
       return true;
     }
 
     // Check remote branches
-    const remoteBranches = execGit('git branch -r --format="%(refname:short)"', options);
+    const remoteBranches = execGit(['branch', '-r', '--format=%(refname:short)'], options);
     const remoteBranchName = `origin/${branchName}`;
     if (remoteBranches.split('\n').includes(remoteBranchName)) {
       return true;
@@ -98,7 +107,7 @@ function branchExists(branchName: string, options: GitManagerOptions = {}): bool
  * Get current branch name
  */
 function _getCurrentBranch(options: GitManagerOptions = {}): string {
-  return execGit('git branch --show-current', options);
+  return execGit(['branch', '--show-current'], options);
 }
 
 /**
@@ -106,7 +115,7 @@ function _getCurrentBranch(options: GitManagerOptions = {}): string {
  */
 function isWorkingDirectoryClean(options: GitManagerOptions = {}): boolean {
   try {
-    const status = execGit('git status --porcelain', options);
+    const status = execGit(['status', '--porcelain'], options);
     return status === '';
   } catch {
     return false;
@@ -141,18 +150,18 @@ export function createHubBranch(
 
   // Checkout base branch and pull latest
   if (shouldPull) {
-    execGit(`git checkout ${baseBranch}`, options);
-    execGit(`git pull origin ${baseBranch}`, options);
+    execGit(['checkout', baseBranch], options);
+    execGit(['pull', 'origin', baseBranch], options);
   } else {
-    execGit(`git checkout ${baseBranch}`, options);
+    execGit(['checkout', baseBranch], options);
   }
 
   // Create hub branch
-  execGit(`git checkout -b ${hubBranchName}`, options);
+  execGit(['checkout', '-b', hubBranchName], options);
 
   // Push hub branch if requested
   if (shouldPush) {
-    execGit(`git push -u origin ${hubBranchName}`, options);
+    execGit(['push', '-u', 'origin', hubBranchName], options);
   }
 
   return hubBranchName;
@@ -183,26 +192,26 @@ export function checkoutFeatureBranch(
 
   // Checkout base branch and pull latest
   if (shouldPull) {
-    execGit(`git checkout ${baseBranch}`, options);
-    execGit(`git pull origin ${baseBranch}`, options);
+    execGit(['checkout', baseBranch], options);
+    execGit(['pull', 'origin', baseBranch], options);
   } else {
-    execGit(`git checkout ${baseBranch}`, options);
+    execGit(['checkout', baseBranch], options);
   }
 
   // Check if feature branch exists
   if (branchExists(featureBranchName, options)) {
     // Checkout existing branch
-    execGit(`git checkout ${featureBranchName}`, options);
+    execGit(['checkout', featureBranchName], options);
     if (shouldPull) {
-      execGit(`git pull origin ${featureBranchName}`, options);
+      execGit(['pull', 'origin', featureBranchName], options);
     }
   } else {
     // Create new branch
-    execGit(`git checkout -b ${featureBranchName}`, options);
+    execGit(['checkout', '-b', featureBranchName], options);
 
     // Push new branch if requested
     if (shouldPush) {
-      execGit(`git push -u origin ${featureBranchName}`, options);
+      execGit(['push', '-u', 'origin', featureBranchName], options);
     }
   }
 
@@ -214,7 +223,7 @@ export function checkoutFeatureBranch(
  */
 function getConflictedFiles(options: GitManagerOptions = {}): string[] {
   try {
-    const status = execGit('git status --porcelain', options);
+    const status = execGit(['status', '--porcelain'], options);
     const conflictedFiles: string[] = [];
 
     for (const line of status.split('\n')) {
@@ -236,11 +245,11 @@ function getConflictedFiles(options: GitManagerOptions = {}): string[] {
 function resolveConflicts(files: string[], strategy: 'theirs' | 'ours', options: GitManagerOptions = {}): void {
   for (const file of files) {
     if (strategy === 'theirs') {
-      execGit(`git checkout --theirs "${file}"`, options);
+      execGit(['checkout', '--theirs', file], options);
     } else {
-      execGit(`git checkout --ours "${file}"`, options);
+      execGit(['checkout', '--ours', file], options);
     }
-    execGit(`git add "${file}"`, options);
+    execGit(['add', file], options);
   }
 }
 
@@ -268,9 +277,9 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
 
   // Checkout branch and pull latest
   try {
-    execGit(`git checkout ${branchName}`, options);
+    execGit(['checkout', branchName], options);
     if (shouldPull) {
-      execGit(`git pull origin ${branchName}`, options);
+      execGit(['pull', 'origin', branchName], options);
     }
   } catch (error: unknown) {
     return {
@@ -281,7 +290,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
 
   // Start rebase
   try {
-    execGit(`git rebase ${baseBranch}`, options);
+    execGit(['rebase', baseBranch], options);
 
     // If rebase completes without conflicts, we're done
     return { success: true };
@@ -300,7 +309,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
     // Too many conflicts - abort if configured
     if (conflictedFiles.length > maxConflicts && abortOnComplex) {
       try {
-        execGit('git rebase --abort', options);
+        execGit(['rebase', '--abort'], options);
       } catch {
         // Ignore abort errors
       }
@@ -320,7 +329,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
     } catch (resolveError: unknown) {
       // Failed to resolve - abort
       try {
-        execGit('git rebase --abort', options);
+        execGit(['rebase', '--abort'], options);
       } catch {
         // Ignore abort errors
       }
@@ -334,7 +343,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
 
     // Continue rebase after resolving conflicts
     try {
-      execGit('git rebase --continue', options);
+      execGit(['rebase', '--continue'], options);
 
       // Rebase might have more conflicts - check again
       const remainingConflicts = getConflictedFiles(options);
@@ -342,7 +351,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
         // More conflicts - abort if configured
         if (remainingConflicts.length > maxConflicts && abortOnComplex) {
           try {
-            execGit('git rebase --abort', options);
+            execGit(['rebase', '--abort'], options);
           } catch {
             // Ignore abort errors
           }
@@ -359,7 +368,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
         conflicts.push(...remainingConflicts.map(file => ({ file, strategy })));
 
         // Continue again
-        execGit('git rebase --continue', options);
+        execGit(['rebase', '--continue'], options);
       }
 
       return { success: true, conflicts };
@@ -371,7 +380,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
         // More conflicts detected
         if (remainingConflicts.length > maxConflicts && abortOnComplex) {
           try {
-            execGit('git rebase --abort', options);
+            execGit(['rebase', '--abort'], options);
           } catch {
             // Ignore abort errors
           }
@@ -408,7 +417,7 @@ export function rebaseBranch(branchName: string, baseBranch: string, options: Re
  * @param options - Git manager options
  */
 export function forcePushWithLease(branchName: string, options: GitManagerOptions = {}): void {
-  execGit(`git push --force-with-lease origin ${branchName}`, options);
+  execGit(['push', '--force-with-lease', 'origin', branchName], options);
 }
 
 /**
@@ -438,17 +447,17 @@ export function mergeBranch(
 
   try {
     // Checkout target branch and pull latest
-    execGit(`git checkout ${targetBranch}`, options);
+    execGit(['checkout', targetBranch], options);
     if (shouldPull) {
-      execGit(`git pull origin ${targetBranch}`, options);
+      execGit(['pull', 'origin', targetBranch], options);
     }
 
     // Merge source branch
-    const mergeCmd = noff
-      ? `git merge ${sourceBranch} --no-ff -m "${message}"`
-      : `git merge ${sourceBranch} -m "${message}"`;
+    const mergeArgs = noff
+      ? ['merge', sourceBranch, '--no-ff', '-m', message]
+      : ['merge', sourceBranch, '-m', message];
 
-    execGit(mergeCmd, options);
+    execGit(mergeArgs, options);
 
     return { success: true };
   } catch (error: unknown) {

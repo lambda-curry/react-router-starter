@@ -13,7 +13,7 @@
 
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { dirname, isAbsolute, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -80,7 +80,7 @@ interface Config {
  */
 function getProjectPrefix(): string {
   try {
-    const output = execSync('bd info --json', { encoding: 'utf-8', stdio: 'pipe' });
+    const output = execFileSync('bd', ['info', '--json'], { encoding: 'utf-8', stdio: 'pipe' });
     const info = JSON.parse(output);
     return info.config.issue_prefix || 'devagent';
   } catch (error) {
@@ -273,21 +273,20 @@ function createBeadsIssue(
   const descFile = createTempFile(body);
   tempFiles.push(descFile);
 
-  let cmd = `bd create --type ${type} --title "${title.replace(/"/g, '\\"')}" --id ${id} --body-file ${descFile} --force`;
+  const args = ['create', '--type', type, '--title', title, '--id', id, '--body-file', descFile, '--force'];
 
   if (!isEpic) {
     const task = item as Task;
     // Combine role and additional labels into a single comma-separated string
     const allLabels = [task.role, ...(task.labels || [])].filter(Boolean);
-    if (allLabels.length) cmd += ` --labels ${allLabels.join(',')}`;
-    if (task.acceptance_criteria?.length)
-      cmd += ` --acceptance "${task.acceptance_criteria.join('; ').replace(/"/g, '\\"')}"`;
+    if (allLabels.length) args.push('--labels', allLabels.join(','));
+    if (task.acceptance_criteria?.length) args.push('--acceptance', task.acceptance_criteria.join('; '));
   }
 
-  cmd += ' --json';
+  args.push('--json');
 
   try {
-    const result = execSync(cmd, { encoding: 'utf-8', stdio: 'pipe' });
+    const result = execFileSync('bd', args, { encoding: 'utf-8', stdio: 'pipe' });
     const created = JSON.parse(result);
     console.log(`✅ Created ${type}: ${created.id} - ${created.title}`);
     return created.id;
@@ -303,7 +302,7 @@ function createBeadsIssue(
 
 function addDependency(taskId: string, dependsOnId: string): void {
   try {
-    execSync(`bd dep add ${taskId} ${dependsOnId}`, { encoding: 'utf-8', stdio: 'pipe' });
+    execFileSync('bd', ['dep', 'add', taskId, dependsOnId], { encoding: 'utf-8', stdio: 'pipe' });
     console.log(`✅ Dependency: ${taskId} -> ${dependsOnId}`);
   } catch (error) {
     if (!error.toString().includes('already exists')) console.warn(`⚠️  Failed dependency ${taskId} -> ${dependsOnId}`);
@@ -312,7 +311,7 @@ function addDependency(taskId: string, dependsOnId: string): void {
 
 function setParent(taskId: string, parentId: string): void {
   try {
-    execSync(`bd update ${taskId} --parent ${parentId}`, { encoding: 'utf-8', stdio: 'pipe' });
+    execFileSync('bd', ['update', taskId, '--parent', parentId], { encoding: 'utf-8', stdio: 'pipe' });
     console.log(`✅ Parent: ${taskId} -> ${parentId}`);
   } catch (error) {
     if (!error.toString().includes('already set')) console.warn(`⚠️  Failed parent ${taskId} -> ${parentId}`);

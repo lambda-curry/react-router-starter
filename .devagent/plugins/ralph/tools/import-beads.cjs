@@ -13,7 +13,7 @@
  */
 
 const fs = require('fs');
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const path = require('path');
 
 // Colors for output
@@ -167,31 +167,44 @@ function importTask(task, tempFiles) {
     }
 
     // Build create command (without --status, as bd create doesn't support it)
-    let cmd = `bd create --type task --title "${task.title.replace(/"/g, '\\"').replace(/`/g, '\\`')}" --id ${task.id} --body-file ${descFile} --force`;
+    const args = [
+      'create',
+      '--type',
+      'task',
+      '--title',
+      task.title,
+      '--id',
+      task.id,
+      '--body-file',
+      descFile,
+      '--force'
+    ];
     
     // Add acceptance criteria
-    if (task.acceptance_criteria && task.acceptance_criteria.length > 0) {
-      const acceptance = task.acceptance_criteria.join('; ').replace(/"/g, '\\"');
-      cmd += ` --acceptance "${acceptance}"`;
+    const acceptance = Array.isArray(task.acceptance_criteria)
+      ? task.acceptance_criteria.join('; ')
+      : task.acceptance_criteria;
+    if (acceptance) {
+      args.push('--acceptance', acceptance);
     }
     
     // Note: Do NOT use --parent with hierarchical IDs - Beads infers it automatically
     
     // Add dependencies
     if (task.depends_on && task.depends_on.length > 0) {
-      cmd += ` --deps ${task.depends_on.join(',')}`;
+      args.push('--deps', task.depends_on.join(','));
     }
     
-    cmd += ' --json';
+    args.push('--json');
     
     // Execute create command
-    const result = execSync(cmd, { encoding: 'utf8', stdio: 'pipe' });
+    const result = execFileSync('bd', args, { encoding: 'utf8', stdio: 'pipe' });
     const created = JSON.parse(result);
     
     // Set status after creation (bd create doesn't support --status flag)
     if (status !== 'open') {
       try {
-        execSync(`bd update ${created.id} --status ${status}`, { encoding: 'utf8', stdio: 'pipe' });
+        execFileSync('bd', ['update', created.id, '--status', status], { encoding: 'utf8', stdio: 'pipe' });
       } catch (e) {
         warn(`Failed to set status for ${created.id}: ${e.message.split('\n')[0]}`);
       }
@@ -226,16 +239,28 @@ function importEpic(epic, tempFiles) {
     }
 
     // Build create command (without --status, as bd create doesn't support it)
-    const cmd = `bd create --type epic --title "${epic.title.replace(/"/g, '\\"')}" --body-file ${descFile} --id ${epic.id} --force --json`;
+    const args = [
+      'create',
+      '--type',
+      'epic',
+      '--title',
+      epic.title,
+      '--body-file',
+      descFile,
+      '--id',
+      epic.id,
+      '--force',
+      '--json'
+    ];
     
     // Execute create command
-    const result = execSync(cmd, { encoding: 'utf8', stdio: 'pipe' });
+    const result = execFileSync('bd', args, { encoding: 'utf8', stdio: 'pipe' });
     const created = JSON.parse(result);
     
     // Set status after creation (bd create doesn't support --status flag)
     if (status !== 'open') {
       try {
-        execSync(`bd update ${created.id} --status ${status}`, { encoding: 'utf8', stdio: 'pipe' });
+        execFileSync('bd', ['update', created.id, '--status', status], { encoding: 'utf8', stdio: 'pipe' });
       } catch (e) {
         warn(`Failed to set status for ${created.id}: ${e.message.split('\n')[0]}`);
       }

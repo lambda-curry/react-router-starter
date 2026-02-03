@@ -22,11 +22,15 @@ try {
   const result = spawnSync('bd', ['show', id, '--json'], { encoding: 'utf-8' });
   if (result.status !== 0) {
     console.error(`Error: Task ${id} not found.`);
-    process.exit(2);
+    process.exit(1);
   }
 
-  const task = JSON.parse(result.stdout)[0];
-  const found = task.status === signal || !!(task.labels && task.labels.includes(signal));
+  if (!result.stdout) {
+    process.exit(1);
+  }
+
+  const task = JSON.parse(result.stdout) as { status?: string; labels?: string[] } | null;
+  const found = !!task && (task.status === signal || !!(task.labels && task.labels.includes(signal)));
 
   process.exit(found ? 0 : 1);
 } catch (e) {
