@@ -1,0 +1,43 @@
+## Final Review: Epic react-router-starter-p5l
+
+**Date:** 2026-02-02  
+**Epic:** React Router Starter Improvements  
+**Progress:** 7/7 tasks closed | Epic status: in_progress → closed
+
+### Acceptance criteria
+
+- **Goal:** Update react-router-starter to be a comprehensive prototype starting point with best practices from reportory, Storybook, forms library, and testing examples.
+- **Outcome:** All criteria met via completed child tasks (p5l.1–p5l.7).
+
+### Task summary
+
+| Task | Title | Status | Notes |
+|------|--------|--------|--------|
+| p5l.1 | Update Dependencies | closed | Bun, React Router 7, Vite, etc. |
+| p5l.2 | Setup Storybook with React Router | closed | Storybook 8, React Router mocking, example stories |
+| p5l.3 | Lambda Curry Forms Integration | closed | @lambdacurry/forms, Zod, contact form, Storybook |
+| p5l.4 | Testing Examples | closed | Unit, component, integration tests; Vitest; TESTING.md |
+| p5l.5 | Setup AI Rules | closed | .cursorrules (react-router, storybook, lambda-curry-forms, testing, 00-project-context) |
+| p5l.6 | Biome Config Review | closed | Lint/format scripts, full lint pass |
+| p5l.7 | Update Documentation | closed | README, usage, Storybook/testing docs |
+
+### Quality gates (final run)
+
+- **Typecheck:** `bun run typecheck` (apps/todo-app) — passed
+- **Lint:** `bun run lint` (apps/todo-app) — passed (31 files)
+- **Tests:** `bun run test:run` (apps/todo-app) — 28 tests, 5 files, passed
+- **Build:** `bun run build` (root turbo) — todo-app build passed
+
+### Deliverables verified
+
+- **Storybook:** .storybook/ configured; stories for add-todo, contact-form, todo-filters, todo-item
+- **Forms:** contact-form with @lambdacurry/forms + Zod; create-todo route
+- **Testing:** format.test.ts, todo-context.test.tsx, contact-form.test.tsx, add-todo.test.tsx, home.integration.test.tsx; test/setup.ts, test-utils.tsx
+- **AI rules:** .cursorrules/ with 00-project-context.mdc, react-router.mdc, storybook.mdc, lambda-curry-forms.mdc, testing-best-practices.mdc
+- **Docs:** README (features, usage, Storybook, testing); TESTING.md; AGENTS.md
+
+### Conclusion
+
+Epic is complete. All child tasks are closed, quality gates pass, and the starter is a solid prototype with Storybook, Lambda Curry forms, testing examples, and AI rules. No follow-up tasks identified. Closing epic.
+
+Signed: Project Manager Agent — Chaos Coordinator

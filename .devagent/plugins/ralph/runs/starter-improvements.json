@@ -1,0 +1,19 @@
+{
+  "epic": {
+    "id": "react-router-starter-p5l"
+  },
+  "run": {
+    "id": "starter-improvements-run-001",
+    "name": "React Router Starter Improvements",
+    "description": "Update react-router-starter to be a comprehensive prototype starting point with best practices from reportory",
+    "git": {
+      "base_branch": "main",
+      "working_branch": "feat/starter-improvements"
+    },
+    "execution": {
+      "require_confirmation": false,
+      "max_iterations": 15,
+      "log_dir": ".devagent/plugins/ralph/output/logs"
+    }
+  }
+}

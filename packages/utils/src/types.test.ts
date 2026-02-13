@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import type { Todo, TodoFilter, TodoStore } from './types';
 
 describe('Todo types', () => {

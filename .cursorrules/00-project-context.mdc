@@ -1,0 +1,51 @@
+---
+description: Project overview and context for react-router-starter
+alwaysApply: true
+---
+
+# Project Context
+
+## What This Repo Is
+
+**react-router-starter** is a monorepo starter for React Router 7 apps with best practices from reportory: Storybook, @lambdacurry/forms, Vitest + React Testing Library, and shared Cursor rules.
+
+## Structure
+
+- **apps/todo-app** – Reference app (React Router 7, Vite, Tailwind v4, forms, Storybook, tests).
+- **packages/** – Shared packages (e.g. `@todo-starter/ui`, `@todo-starter/utils`) used by apps.
+- **.cursorrules/** – Cursor AI rules (project context, React Router, Storybook, forms, testing, monorepo, UI).
+
+## Issue Tracking
+
+This project uses **Beads (bd)** for issues. See `AGENTS.md` for workflow.
+
+```bash
+bd ready              # Find available work
+bd show <id>           # View issue details
+bd update <id> --status in_progress  # Claim work
+bd close <id>          # Complete work
+bd sync                # Sync with git
+```
+
+## Quality Gates (todo-app)
+
+From `apps/todo-app/package.json`:
+
+- **Test:** `npm run test:run` or `npm run test:ci` (Vitest)
+- **Lint:** `npm run lint` (Biome)
+- **Typecheck:** `npm run typecheck` (tsc)
+- **Build:** `npm run build` (react-router build)
+- **Storybook:** `npm run storybook` (dev), `npm run build-storybook` (build)
+
+Run these from `apps/todo-app` or via workspace root scripts if defined.
+
+## Conventions
+
+- **Routing:** File-based routes in `app/routes/`; use loaders/actions and route types.
+- **Forms:** @lambdacurry/forms + remix-hook-form + Zod; see `.cursorrules/lambda-curry-forms.mdc`.
+- **Tests:** Vitest + React Testing Library; use `renderWithRouter` for router-dependent components; see `apps/todo-app/TESTING.md` and `.cursorrules/testing-best-practices.mdc`.
+- **Styling:** Tailwind CSS v4; mobile-first; prefer existing UI components.
+
+## Rule Order
+
+Cursor rules in `.cursorrules/` are applied as configured. `00-project-context.mdc` is intended to load first (naming prefix) to establish project context; other rule files add domain-specific guidance (React Router, Storybook, forms, testing, monorepo, UI).
