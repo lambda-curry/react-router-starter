@@ -99,17 +99,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 ```
 
-## Advanced Patterns
-
-### Conditional Fields
-```typescript
-const watchAccountType = methods.watch('accountType');
-
-{watchAccountType === 'business' && (
-  <TextField name="companyName" label="Company Name" />
-)}
-```
-
 ## Available Form Components
 
 ### TextField Component

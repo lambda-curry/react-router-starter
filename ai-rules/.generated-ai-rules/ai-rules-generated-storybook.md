@@ -12,6 +12,7 @@
 Components that use `Link`, `useNavigate`, `useFetcher`, or `useHref` need router context. Use a global decorator in `preview.tsx`:
 
 ```tsx
+import type { Preview } from '@storybook/react';
 import type { ComponentType } from 'react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 

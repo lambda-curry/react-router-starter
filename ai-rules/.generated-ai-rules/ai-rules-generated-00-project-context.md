@@ -2,7 +2,7 @@
 
 ## What This Repo Is
 
-**react-router-starter** is a monorepo starter for React Router 7 apps with best practices from reportory: Storybook, @lambdacurry/forms, Bun test + React Testing Library, and shared AI rules.
+**react-router-starter** is a monorepo starter for React Router 7 apps with best practices: Storybook, @lambdacurry/forms, Bun test + React Testing Library, and shared AI rules.
 
 ## Structure
 
@@ -48,5 +48,5 @@ Run these from `apps/todo-app` or via workspace root scripts if defined.
 ## AI Rules Workflow
 
 - **Edit source rules** in `ai-rules/`
-- **Generate platform files** with `ai-rules generate`
-- **Check sync** with `ai-rules status`
+- **Generated outputs** in `.generated-ai-rules/` and `.cursor/rules/` are maintained by repository automation
+- **Do not edit generated files directly**; change source rules in `ai-rules/`

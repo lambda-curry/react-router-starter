@@ -13,7 +13,7 @@ This document outlines the integration of the `@lambdacurry/forms` library into 
 
 ### AI Rules
 - Added `ai-rules/lambda-curry-forms.md` with comprehensive guidelines for using the forms library
-- Generate agent-specific outputs with `ai-rules generate` (AGENTS, Cursor rules, etc.)
+- Generated outputs in `ai-rules/.generated-ai-rules/` and `.cursor/rules/` are managed by repository automation; update source rules instead of editing generated files directly.
 
 ### Components Updated
 
