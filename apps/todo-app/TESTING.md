@@ -1,6 +1,6 @@
 # Testing Guide
 
-This app uses **Vitest** and **React Testing Library** for unit, component, and integration tests.
+This app uses **Bun test** and **React Testing Library** for unit, component, and integration tests.
 
 ## Running tests
 
@@ -8,15 +8,15 @@ This app uses **Vitest** and **React Testing Library** for unit, component, and 
 npm run test        # watch mode
 npm run test:run    # single run (CI)
 npm run test:ci     # same as test:run
-npm run test:ui     # Vitest UI (interactive)
+npm run test:watch  # explicit watch mode
 ```
 
-Use `bun run test`, `bun run test:run`, etc. if using Bun.
+Use `bun run test`, `bun run test:run`, etc. as equivalent commands.
 
-Optional coverage (requires `@vitest/coverage-v8`):
+Optional coverage:
 
 ```bash
-npx vitest run --coverage
+bun test --coverage --coverage-reporter=text --coverage-reporter=lcov
 ```
 
 ## Test layout
@@ -69,12 +69,12 @@ renderWithRouter(
 
 See `app/routes/__tests__/home.integration.test.tsx` (Todo flow: provider + AddTodo + filtered list). For full-route integration with `Link`/navigation, use the app router in E2E or a test environment that mounts the full app.
 
-## Vitest config
+## Bun test setup
 
-`vitest.config.ts` sets:
+`bunfig.toml` preloads `test/setup.ts`, which:
 
-- **include:** `app/**/*.{test,spec}.{ts,tsx}`
-- **exclude:** `node_modules`, `build`, Storybook files
-- **env:** `NODE_ENV=test`
-- **setupFiles:** `test/setup.ts` (jest-dom, RTL cleanup)
-- **coverage:** optional; enable with `--coverage` and `@vitest/coverage-v8` if needed
+- boots a JSDOM environment for component/integration tests
+- registers `@testing-library/jest-dom` matchers
+- runs RTL cleanup after each test
+
+Coverage remains optional via `bun test --coverage ...`.

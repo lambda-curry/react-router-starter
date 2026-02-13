@@ -1,5 +1,6 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, jest } from 'bun:test';
 import { renderWithRouter } from '../../../test/test-utils';
 import { AddTodo } from '../add-todo';
 
@@ -8,41 +9,43 @@ const addRegex = /add/i;
 
 describe('AddTodo', () => {
   it('renders input and button', () => {
-    const mockOnAdd = vi.fn();
+    const mockOnAdd = jest.fn();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     expect(screen.getByPlaceholderText('Add a new todo...')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: addRegex })).toBeInTheDocument();
   });
 
-  it('calls onAdd when form is submitted with text', () => {
-    const mockOnAdd = vi.fn();
+  it('calls onAdd when form is submitted with text', async () => {
+    const mockOnAdd = jest.fn();
+    const user = userEvent.setup();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: addRegex });
 
-    fireEvent.change(input, { target: { value: 'New todo' } });
-    fireEvent.click(button);
+    await user.type(input, 'New todo');
+    await user.click(button);
 
-    expect(mockOnAdd).toHaveBeenCalledWith('New todo');
+    await waitFor(() => expect(mockOnAdd).toHaveBeenCalledWith('New todo'));
   });
 
-  it('clears input after adding todo', () => {
-    const mockOnAdd = vi.fn();
+  it('clears input after adding todo', async () => {
+    const mockOnAdd = jest.fn();
+    const user = userEvent.setup();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const input = screen.getByPlaceholderText('Add a new todo...') as HTMLInputElement;
     const button = screen.getByRole('button', { name: addRegex });
 
-    fireEvent.change(input, { target: { value: 'New todo' } });
-    fireEvent.click(button);
+    await user.type(input, 'New todo');
+    await user.click(button);
 
-    expect(input.value).toBe('');
+    await waitFor(() => expect(input.value).toBe(''));
   });
 
   it('does not call onAdd with empty text', () => {
-    const mockOnAdd = vi.fn();
+    const mockOnAdd = jest.fn();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const button = screen.getByRole('button', { name: addRegex });
@@ -51,16 +54,17 @@ describe('AddTodo', () => {
     expect(mockOnAdd).not.toHaveBeenCalled();
   });
 
-  it('trims whitespace from input', () => {
-    const mockOnAdd = vi.fn();
+  it('trims whitespace from input', async () => {
+    const mockOnAdd = jest.fn();
+    const user = userEvent.setup();
     renderWithRouter(<AddTodo onAdd={mockOnAdd} />);
 
     const input = screen.getByPlaceholderText('Add a new todo...');
     const button = screen.getByRole('button', { name: addRegex });
 
-    fireEvent.change(input, { target: { value: '  New todo  ' } });
-    fireEvent.click(button);
+    await user.type(input, '  New todo  ');
+    await user.click(button);
 
-    expect(mockOnAdd).toHaveBeenCalledWith('New todo');
+    await waitFor(() => expect(mockOnAdd).toHaveBeenCalledWith('New todo'));
   });
 });

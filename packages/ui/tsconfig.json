@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "types": ["bun-types"],
     "baseUrl": ".",
     "paths": {
       "@todo-starter/ui": ["./src"],
@@ -19,4 +20,3 @@
     ".turbo"
   ]
 }
-

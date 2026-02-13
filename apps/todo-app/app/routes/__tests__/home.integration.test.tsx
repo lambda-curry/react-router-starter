@@ -1,5 +1,6 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it } from 'bun:test';
 import { renderWithRouter } from '../../../test/test-utils';
 import { AddTodo } from '../../components/add-todo';
 import { TodoItem } from '../../components/todo-item';
@@ -26,7 +27,8 @@ function TodoFlow() {
 }
 
 describe('Todo flow (integration)', () => {
-  it('adds a todo and shows it in the list', () => {
+  it('adds a todo and shows it in the list', async () => {
+    const user = userEvent.setup();
     renderWithRouter(
       <TodoProvider>
         <TodoFlow />
@@ -37,10 +39,10 @@ describe('Todo flow (integration)', () => {
     const input = screen.getByPlaceholderText('Add a new todo...');
     const addButton = screen.getByRole('button', { name: /add/i });
 
-    fireEvent.change(input, { target: { value: 'Integration test todo' } });
-    fireEvent.click(addButton);
+    await user.type(input, 'Integration test todo');
+    await user.click(addButton);
 
-    expect(screen.getByText('Integration test todo')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText('Integration test todo')).toBeInTheDocument());
   });
 
   it('shows initial todos and allows filtering', () => {

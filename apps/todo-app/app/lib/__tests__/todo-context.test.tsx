@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import type { Todo } from '@todo-starter/utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { getFilteredTodos, TodoProvider, useTodoStore } from '../todo-context';
 
 // Mock crypto.randomUUID for consistent testing

@@ -12,10 +12,10 @@ A modern, full-featured todo application built with React Router 7, showcasing b
 - **React Context + useReducer** - Built-in state management
 - **Lambda Curry Forms** - Type-safe forms with Zod and React Hook Form ([FORMS_INTEGRATION.md](./FORMS_INTEGRATION.md))
 - **Storybook** - Component development and documentation (port 6006)
-- **Vitest** - Fast unit, component, and integration testing
+- **Bun Test** - Fast unit, component, and integration testing
 - **Bun** - Fast package manager and runtime
 - **Biome** - Linting and formatting
-- **AI / Agent rules** - Beads issue tracking and Cursor rules ([AGENTS.md](./AGENTS.md))
+- **AI / Agent rules** - Managed by `ai-rules` (AGENTS + Cursor rules) ([AGENTS.md](./AGENTS.md))
 
 ## 📁 Project Structure
 
@@ -78,9 +78,9 @@ cd apps/todo-app
 bun dev                    # Start dev server (http://localhost:5173)
 bun run storybook          # Start Storybook (http://localhost:6006)
 bun run build-storybook    # Build static Storybook
-bun test                   # Vitest watch mode
-bun run test:run           # Vitest single run
-bun run test:ui            # Vitest UI
+bun test                   # Bun test run
+bun run test:watch         # Bun test watch mode
+bun run test:run           # Bun test single run
 ```
 
 Quick flows:
@@ -104,10 +104,10 @@ Quick flows:
 - `bun dev` - Start development server
 - `bun build` - Build for production
 - `bun start` - Start production server
-- `bun test` - Run tests (Vitest watch)
+- `bun test` - Run tests
 - `bun run test:run` - Run tests once
 - `bun run test:ci` - Run tests once (CI)
-- `bun run test:ui` - Run tests with Vitest UI
+- `bun run test:watch` - Run tests in watch mode
 - `bun run storybook` - Start Storybook (port 6006)
 - `bun run build-storybook` - Build static Storybook
 
@@ -159,7 +159,7 @@ Use `npm run storybook` / `npm run build-storybook` if you prefer npm in that ap
 
 ## 🧪 Testing
 
-The project uses **Vitest** and **React Testing Library** for unit, component, and integration tests. Full patterns and examples are in **[apps/todo-app/TESTING.md](./apps/todo-app/TESTING.md)**.
+The project uses **Bun test** and **React Testing Library** for unit, component, and integration tests. Full patterns and examples are in **[apps/todo-app/TESTING.md](./apps/todo-app/TESTING.md)**.
 
 **Patterns:**
 
@@ -171,10 +171,10 @@ The project uses **Vitest** and **React Testing Library** for unit, component, a
 
 | Script | Description |
 |--------|-------------|
-| `bun test` | Vitest watch mode |
+| `bun test` | Bun test run |
 | `bun run test:run` | Single run (CI) |
 | `bun run test:ci` | Same as test:run |
-| `bun run test:ui` | Vitest UI |
+| `bun run test:watch` | Watch mode |
 
 Shared setup: `test/setup.ts`. Shared helpers: `test/test-utils.tsx` (includes `renderWithRouter`).
 
@@ -233,7 +233,7 @@ The app supports:
 
 - **[FORMS_INTEGRATION.md](./FORMS_INTEGRATION.md)** — Lambda Curry Forms setup, patterns, and examples
 - **[apps/todo-app/TESTING.md](./apps/todo-app/TESTING.md)** — Testing guide (unit, component, integration, `renderWithRouter`)
-- **[AGENTS.md](./AGENTS.md)** — Beads issue tracking and session workflow for agents
+- **[AGENTS.md](./AGENTS.md)** — Generated agent rules (ai-rules) and Ralph/Beads guidance
 
 ## 📚 Learn More
 
@@ -241,7 +241,7 @@ The app supports:
 - [Tailwind CSS v4](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 - [React Context](https://react.dev/reference/react/useContext)
-- [Vitest](https://vitest.dev/)
+- [Bun test](https://bun.sh/docs/cli/test)
 - [Turbo](https://turbo.build/)
 
 ## 🤝 Contributing

@@ -1,11 +1,12 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, jest } from 'bun:test';
 import { renderWithRouter } from '../../../test/test-utils';
 import { ContactForm } from '../contact-form';
 
 describe('ContactForm', () => {
   it('renders name, email, message fields and submit button', () => {
-    const onSubmit = vi.fn();
+    const onSubmit = jest.fn();
     renderWithRouter(<ContactForm onSubmit={onSubmit} />);
 
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
@@ -15,15 +16,14 @@ describe('ContactForm', () => {
   });
 
   it('calls onSubmit with validated data when form is valid', async () => {
-    const onSubmit = vi.fn();
+    const onSubmit = jest.fn();
+    const user = userEvent.setup();
     renderWithRouter(<ContactForm onSubmit={onSubmit} />);
 
-    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Jane' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'jane@example.com' } });
-    fireEvent.change(screen.getByLabelText(/message/i), {
-      target: { value: 'Hello, this is a test message.' }
-    });
-    fireEvent.click(screen.getByRole('button', { name: /send message/i }));
+    await user.type(screen.getByLabelText(/name/i), 'Jane');
+    await user.type(screen.getByLabelText(/email/i), 'jane@example.com');
+    await user.type(screen.getByLabelText(/message/i), 'Hello, this is a test message.');
+    await user.click(screen.getByRole('button', { name: /send message/i }));
 
     await waitFor(() =>
       expect(onSubmit).toHaveBeenCalledWith({
@@ -35,7 +35,7 @@ describe('ContactForm', () => {
   });
 
   it('does not call onSubmit when required fields are empty', () => {
-    const onSubmit = vi.fn();
+    const onSubmit = jest.fn();
     renderWithRouter(<ContactForm onSubmit={onSubmit} />);
 
     fireEvent.click(screen.getByRole('button', { name: /send message/i }));
@@ -43,14 +43,15 @@ describe('ContactForm', () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it('does not call onSubmit when message is too short', () => {
-    const onSubmit = vi.fn();
+  it('does not call onSubmit when message is too short', async () => {
+    const onSubmit = jest.fn();
+    const user = userEvent.setup();
     renderWithRouter(<ContactForm onSubmit={onSubmit} />);
 
-    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Jane' } });
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'jane@example.com' } });
-    fireEvent.change(screen.getByLabelText(/message/i), { target: { value: 'Hi' } });
-    fireEvent.click(screen.getByRole('button', { name: /send message/i }));
+    await user.type(screen.getByLabelText(/name/i), 'Jane');
+    await user.type(screen.getByLabelText(/email/i), 'jane@example.com');
+    await user.type(screen.getByLabelText(/message/i), 'Hi');
+    await user.click(screen.getByRole('button', { name: /send message/i }));
 
     expect(onSubmit).not.toHaveBeenCalled();
   });
