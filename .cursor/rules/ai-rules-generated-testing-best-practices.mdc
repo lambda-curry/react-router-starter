@@ -1,0 +1,78 @@
+---
+description: Bun test and React Testing Library patterns for React Router apps
+globs: apps/**/*.test.{ts, tsx}, apps/**/*.spec.{ts, tsx}, apps/**/test/**/*
+alwaysApply: false
+---
+
+# Testing Best Practices
+
+## Stack
+
+- **Runner:** Bun test (`bun:test`) with JSDOM bootstrap in `test/setup.ts` (loaded via `bunfig.toml`)
+- **Component/DOM:** React Testing Library
+- **Router:** `createMemoryRouter` + `RouterProvider` via shared `renderWithRouter` helper
+
+## Test Layout (todo-app)
+
+| Pattern       | Location                          | Purpose |
+|---------------|-----------------------------------|--------|
+| Unit          | `app/lib/__tests__/*.test.ts`     | Pure utilities, helpers |
+| Component     | `app/components/__tests__/*.test.tsx` | UI with router/context mocking |
+| Integration   | `app/routes/__tests__/*.integration.test.tsx` | Full route + provider flows |
+
+Shared setup: `test/setup.ts` (jest-dom, RTL cleanup). Shared helpers: `test/test-utils.tsx`.
+
+## Router-Dependent Components
+
+Use `renderWithRouter` for any component that uses `Link`, `useNavigate`, `useFetcher`, or `useHref`:
+
+```tsx
+import { renderWithRouter } from '../../../test/test-utils';
+
+it('renders and submits', () => {
+  renderWithRouter(<MyComponent />);
+});
+
+it('renders at /contact', () => {
+  renderWithRouter(<Page />, { initialEntries: ['/contact'] });
+});
+```
+
+For full route trees (loaders, nested layouts), use `createTestRouter` or pass `routes` into `renderWithRouter`.
+
+## Integration Tests
+
+Wrap route components with the same providers as the app (e.g. TodoProvider), then assert user flows:
+
+```tsx
+import { renderWithRouter } from '../../test/test-utils';
+import { TodoProvider } from '../../lib/todo-context';
+import Home from '../home';
+
+renderWithRouter(
+  <TodoProvider>
+    <Home />
+  </TodoProvider>
+);
+// fire events, assert DOM/state
+```
+
+## Bun Config (reference)
+
+- **preload:** `test/setup.ts` via `bunfig.toml`
+- **jsdom:** initialized in `test/setup.ts` (globals + `@testing-library/jest-dom`)
+- **testTimeout:** Bun default is `5000`; adjust with `bun test --timeout <ms>` when needed
+
+## Commands
+
+- `bun run test` – run tests
+- `bun run test:watch` – watch mode
+- `bun run test:run` / `bun run test:ci` – single run (CI)
+
+## Best Practices
+
+- Prefer `getByRole`, `getByLabelText`, `getByPlaceholderText` over brittle selectors
+- Use `jest.fn()` from `bun:test` for callbacks; assert calls and args
+- Hoist repeated regex/selectors to describe scope to satisfy lint rules
+- Keep tests focused; use multiple `it` blocks instead of one large test
+- For forms: test validation, submit behavior, and error display (see lambda-curry-forms rules for FormError)

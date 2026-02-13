@@ -11,9 +11,9 @@ This document outlines the integration of the `@lambdacurry/forms` library into 
 - `remix-hook-form` - React Router integration
 - `zod` - Schema validation
 
-### Cursor Rules
-- Added `.cursorrules/lambda-curry-forms.mdc` with comprehensive guidelines for using the forms library
-- Includes patterns, best practices, and component usage examples
+### AI Rules
+- Added `ai-rules/lambda-curry-forms.md` with comprehensive guidelines for using the forms library
+- Generate agent-specific outputs with `ai-rules generate` (AGENTS, Cursor rules, etc.)
 
 ### Components Updated
 
@@ -200,7 +200,7 @@ The forms library integrates seamlessly with:
 1. **Install Dependencies:** Run `bun install` to install new packages
 2. **Run Development:** Use `bun run dev` to start the development server
 3. **Explore Examples:** Navigate through the updated components and new route
-4. **Read Cursor Rules:** Review `.cursorrules/lambda-curry-forms.mdc` for detailed guidelines
+4. **Read AI Rules:** Review `ai-rules/lambda-curry-forms.md` for detailed guidelines
 
 ## 🔗 Resources
 

@@ -1,0 +1,13 @@
+agents:
+  - claude
+  - cursor
+  - codex
+  - gemini
+  - copilot
+  - opencode
+
+# Keep generation local to this repo root.
+nested_depth: 0
+
+# Prefer checking generated files into git so collaborators share the same AI instructions.
+gitignore: false

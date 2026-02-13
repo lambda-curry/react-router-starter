@@ -1,14 +1,8 @@
----
-description: Vitest and React Testing Library patterns for React Router apps
-globs: apps/**/*.test.{ts,tsx}, apps/**/*.spec.{ts,tsx}, apps/**/test/**/*
-alwaysApply: false
----
-
 # Testing Best Practices
 
 ## Stack
 
-- **Runner:** Vitest (globals, jsdom, `test/setup.ts`)
+- **Runner:** Bun test (`bun:test`) with JSDOM bootstrap in `test/setup.ts` (loaded via `bunfig.toml`)
 - **Component/DOM:** React Testing Library
 - **Router:** `createMemoryRouter` + `RouterProvider` via shared `renderWithRouter` helper
 
@@ -57,23 +51,22 @@ renderWithRouter(
 // fire events, assert DOM/state
 ```
 
-## Vitest Config (reference)
+## Bun Config (reference)
 
-- **include:** `app/**/*.{test,spec}.{ts,tsx}`
-- **exclude:** node_modules, build, `**/*.stories.*`, .storybook
-- **env:** NODE_ENV=test
-- **setupFiles:** `test/setup.ts`
-- **testTimeout:** 10_000 (adjust if needed for slow flows)
+- **preload:** `test/setup.ts` via `bunfig.toml`
+- **jsdom:** initialized in `test/setup.ts` (globals + `@testing-library/jest-dom`)
+- **testTimeout:** Bun default is `5000`; adjust with `bun test --timeout <ms>` when needed
 
 ## Commands
 
-- `npm run test` – watch
-- `npm run test:run` / `npm run test:ci` – single run (CI)
+- `bun run test` – run tests
+- `bun run test:watch` – watch mode
+- `bun run test:run` / `bun run test:ci` – single run (CI)
 
 ## Best Practices
 
 - Prefer `getByRole`, `getByLabelText`, `getByPlaceholderText` over brittle selectors
-- Use `vi.fn()` for callbacks; assert calls and args
+- Use `jest.fn()` from `bun:test` for callbacks; assert calls and args
 - Hoist repeated regex/selectors to describe scope to satisfy lint rules
 - Keep tests focused; use multiple `it` blocks instead of one large test
 - For forms: test validation, submit behavior, and error display (see lambda-curry-forms rules for FormError)
