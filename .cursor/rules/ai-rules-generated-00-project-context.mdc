@@ -1,0 +1,58 @@
+---
+description: Project overview and context for react-router-starter
+globs: **/*
+alwaysApply: true
+---
+
+# Project Context
+
+## What This Repo Is
+
+**react-router-starter** is a monorepo starter for React Router 7 apps with best practices: Storybook, @lambdacurry/forms, Bun test + React Testing Library, and shared AI rules.
+
+## Structure
+
+- **apps/todo-app** – Reference app (React Router 7, Vite, Tailwind v4, forms, Storybook, tests).
+- **packages/** – Shared packages (e.g. `@todo-starter/ui`, `@todo-starter/utils`) used by apps.
+- **ai-rules/** – Source-of-truth AI rules (project context, React Router, Storybook, forms, testing, monorepo, UI).
+- **.cursor/rules/** – Generated Cursor rules (do not edit directly).
+- **AGENTS.md / CLAUDE.md / GEMINI.md** – Generated agent rules (do not edit directly).
+
+## Issue Tracking (Beads)
+
+Beads is required **only** when running Ralph loops or when a task explicitly comes from Beads. For ad-hoc work, you can skip Beads.
+
+When Beads is in use, follow `.devagent/plugins/ralph/AGENTS.md` and use the CLI:
+
+```bash
+bd ready              # Find available work
+bd show <id>           # View issue details
+bd update <id> --status in_progress  # Claim work
+bd update <id> --status closed       # Complete work
+bd sync                # Sync with git
+```
+
+## Quality Gates (todo-app)
+
+From `apps/todo-app/package.json`:
+
+- **Test:** `bun run test:run` or `bun run test:ci` (Bun test)
+- **Lint:** `npm run lint` (Biome)
+- **Typecheck:** `npm run typecheck` (tsc)
+- **Build:** `npm run build` (react-router build)
+- **Storybook:** `npm run storybook` (dev), `npm run build-storybook` (build)
+
+Run these from `apps/todo-app` or via workspace root scripts if defined.
+
+## Conventions
+
+- **Routing:** File-based routes in `app/routes/`; use loaders/actions and route types.
+- **Forms:** @lambdacurry/forms + remix-hook-form + Zod; see `ai-rules/lambda-curry-forms.md`.
+- **Tests:** Bun test + React Testing Library; use `renderWithRouter` for router-dependent components; see `apps/todo-app/TESTING.md` and `ai-rules/testing-best-practices.md`.
+- **Styling:** Tailwind CSS v4; mobile-first; prefer existing UI components.
+
+## AI Rules Workflow
+
+- **Edit source rules** in `ai-rules/`
+- **Generated outputs** in `.generated-ai-rules/` and `.cursor/rules/` are maintained by repository automation
+- **Do not edit generated files directly**; change source rules in `ai-rules/`

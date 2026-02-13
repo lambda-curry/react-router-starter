@@ -1,7 +1,7 @@
 ---
 description: Guidelines for using @lambdacurry/forms library with Remix Hook Form and Zod validation
-globs: apps/**/app/**/*.tsx, apps/**/app/**/*.ts, packages/**/*.tsx, packages/**/*.ts
 alwaysApply: true
+fileMatching: "apps/**/app/**/*.tsx, apps/**/app/**/*.ts, packages/**/*.tsx, packages/**/*.ts"
 ---
 
 **Summary:**
@@ -103,17 +103,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     };
   }
 };
-```
-
-## Advanced Patterns
-
-### Conditional Fields
-```typescript
-const watchAccountType = methods.watch('accountType');
-
-{watchAccountType === 'business' && (
-  <TextField name="companyName" label="Company Name" />
-)}
 ```
 
 ## Available Form Components

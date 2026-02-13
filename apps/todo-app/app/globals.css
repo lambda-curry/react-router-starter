@@ -1,6 +1,9 @@
 @import "tailwindcss";
-@source "../../packages/ui/src/components/ui/**/*.{ts,tsx}";
-@source "../../../node_modules/@lambdacurry/forms/**/*.{js,ts,tsx}";
+@import "tw-animate-css";
+@source "../**/*.{js,ts,jsx,tsx}";
+@source "../../../packages/ui/src/components/ui/**/*.{ts,tsx}";
+@source "../../../node_modules/@lambdacurry/forms/dist/**/*.{js,ts,jsx,tsx}";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --breakpoint-3xl: 1600px;
@@ -148,6 +151,7 @@
     @apply scroll-smooth;
   }
   body {
+    @apply bg-background text-foreground;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
   }
