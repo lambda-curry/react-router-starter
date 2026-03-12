@@ -6,11 +6,14 @@
     "build": "bun run turbo build",
     "start": "bun run turbo start",
     "dev": "bun run turbo dev",
+    "prepare": "lefthook install",
     "lint": "bun run turbo lint",
     "format": "bun run turbo run format",
     "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules .turbo apps/*/.turbo packages/*/.turbo .vercel apps/*/.vercel packages/*/.vercel apps/*/.react-router packages/*/.react-router",
     "typecheck": "bun run turbo run typecheck",
     "biome-fix": "bun run biome check --fix",
+    "check:lock": "bun install --frozen-lockfile --ignore-scripts",
+    "check:prepush": "bun run check:lock && bun run lint && bun run typecheck && bun run build",
     "test": "bun run turbo run test",
     "test:ci": "bun run turbo run test:ci"
   },
@@ -36,13 +39,14 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.5",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/ui": "^3.2.4",
+    "jsdom": "^26.1.0",
+    "lefthook": "^2.1.0",
     "turbo": "^2.8.1",
     "typescript": "^5.9.3",
     "vite": "^6.4.1",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4",
-    "@vitest/ui": "^3.2.4",
-    "jsdom": "^26.1.0"
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=20.11.0"
